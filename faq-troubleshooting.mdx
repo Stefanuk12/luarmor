@@ -29,7 +29,7 @@ When using Luarmor, you may come across some errors or issues. This page will he
         <Accordion title="Automatically support via darklua">
             <Steps>
                 <Step title="Go to the playground">
-                    A web version of darklua can be accessed [here](https://darklua.com/try-it/?configuration=%7B%22rules%22%3A%5B%22remove_comments%22%2C%22remove_interpolated_string%22%2C%22remove_types%22%2C%22remove_compound_assignment%22%5D%7D).
+                    A web version of darklua can be accessed [here](https://darklua.com/try-it/?configuration=%7B%22rules%22%3A%5B%22remove_comments%22%2C%22remove_interpolated_string%22%2C%22remove_types%22%2C%22remove_compound_assignment%22%2C%22remove_if_expression%22%5D%7D).
                 </Step>
                 <Step title="Paste your code">
                     Paste your code into the left box.
@@ -141,6 +141,12 @@ When using Luarmor, you may come across some errors or issues. This page will he
         </Steps>
     </Accordion>
     <Accordion title="I want to add support for my executor">
+        <Warning>
+            If you exploit is external or uses Xeno as a base, you will not get support. In this case, your only option is to:
+            1. Set `identifyexecutor` to return the same as Xeno
+            2. Use `Xeno-Fingerprint`
+            3. Set the `User-Agent` the same as Xeno
+        </Warning>
         <Steps>
             <Step title="Follow UNC">
                 - Follow the [UNC for the request function](https://github.com/unified-naming-convention/NamingStandard/blob/main/api/misc.md#headers), including headers.
