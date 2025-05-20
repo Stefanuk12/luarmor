@@ -20,7 +20,20 @@ Luarmor uses [Luraph™️](https://luraph.com) as the obfuscation provider, so 
             ```lua
             LRM_INIT_SCRIPT(function()
                 print("Hello, world!")
+                -- this wait is very important!!!
                 task.wait()
+            end)
+            ```
+
+            ```lua
+            LRM_INIT_SCRIPT(function()
+                -- some code
+
+                -- wait for the user to put the key in or something
+                while HasUserCompleted == false do
+                    -- but this wait is needed!! 
+                    task.wait()
+                end
             end)
             ```
         </Accordion>
