@@ -16,17 +16,16 @@ Luarmor uses [Luraph™️](https://luraph.com) as the obfuscation provider, so 
             You **must** yield *somewhere*, even if it's just a `task.wait()` at the end. Otherwise, `script_key` will read as `nil`.
         </Warning>
 
-        <Check>
-            Good usage:
+        <Accordion title="Good usage">
             ```lua
             LRM_INIT_SCRIPT(function()
                 print("Hello, world!")
+                task.wait()
             end)
             ```
-        </Check>
+        </Accordion>
 
-        <Warning>
-            Bad usage:
+        <Accordion title="Bad usage">
             ```lua
             LRM_INIT_SCRIPT(print("Hello, world!"))
             ```
@@ -36,9 +35,10 @@ Luarmor uses [Luraph™️](https://luraph.com) as the obfuscation provider, so 
             ```lua
             local function init()
                 print("Hello, world!")
+                task.wait()
             end
             LRM_INIT_SCRIPT(init)
             ```
-        </Warning>
+        </Accordion>
     </Accordion>
 </AccordionGroup>
