@@ -12,6 +12,10 @@ Luarmor uses [Luraph™️](https://luraph.com) as the obfuscation provider, so 
     <Accordion title="LRM_INIT_SCRIPT">
         This macro allows you to run a piece of code before your script is ran. It accepts a **constant** function.
 
+        <Warning>
+            You **must** yield *somewhere*, even if it's just a `task.wait()` at the end. Otherwise, `script_key` will read as `nil`.
+        </Warning>
+
         <Check>
             Good usage:
             ```lua
