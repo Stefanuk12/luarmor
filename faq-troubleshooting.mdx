@@ -4,93 +4,161 @@ title: 'FAQ and Troubleshooting'
 
 When using Luarmor, you may come across some errors or issues. This page will help you troubleshoot and solve common problems. If your issue is not listed here, please contact our support team.
 
-## Uploading scripts
+This page is split into two parts, one for script owners and another for script users. Please make sure you are reading the correct section
+
+# Script Users
+
+## Getting a key (Ad Rewards)
 
 <AccordionGroup>
-    <Accordion title="Luau is not fully supported">
-        While Luraph supports Luau fully, Luarmor does not. Therefore, you must remove some Luau features from your script before uploading it to Luarmor. This includes:
-        - any types
-        - inline ternary via `if` statement:
-        ```lua
-        -- this does not work
-        local maxValue = if value > 10 then 10 else value end
+    <Accordion title="How to get a key?">
+        First, you **must** complete all checkpoints.
+        Start completing the checkpoints by pressing the "START" button.
 
-        -- instead, use:
-        local maxValue
-        if value > 10 then
-            maxValue = 10
-        else
-            maxValue = value
-        end
-        ```
+        **Do NOT attempt to bypass key system or you will be blacklisted.**
 
-        For more information, view the Luau docs [here](https://luau-lang.org/syntax).
+        Once you have completed all of the checkpoints, the progress bar should be fully green and the button now says "DONE".
+        Now, press "+ GET A NEW KEY"
 
-        <Accordion title="Automatically support via darklua">
-            <Steps>
-                <Step title="Go to the playground">
-                    A web version of darklua can be accessed [here](https://darklua.com/try-it/?configuration=%7B%22rules%22%3A%5B%22remove_comments%22%2C%22remove_interpolated_string%22%2C%22remove_types%22%2C%22remove_compound_assignment%22%2C%22remove_if_expression%22%5D%7D).
-                </Step>
-                <Step title="Paste your code">
-                    Paste your code into the left box.
-                </Step>
-                <Step title="Press the format button">
-                    To ensure everything worked, press the "Configure" button, then press the "format" button on the left panel
-                </Step>
-                <Step title="Copy the code">
-                    <Note>
-                        Press `CTRL + A` to select all, then `CTRL + C` to copy, instead of manually selecting the code.
-                    </Note>
+        Your new key should now appear, simply press the copy button and use it within the script.
 
-                    Copy the code from the right box and paste it into Luarmor.
-                </Step>
-            </Steps>
-        </Accordion>
+        If an error appears, please read the rest of the FAQ.
+        If your error is not answered on this page, please create a ticket in our [Discord server](https://discord.gg/luarmor).
+
+        ![A screenshot once the entire process is completed](./images/get_key.png)
     </Accordion>
-    <Accordion title="The line count isn't making sense / matching up">
-        Luarmor adds its own code before obfuscation which changes the line count. Therefore the line count is not accurate and unreliable.
+
+    <Accordion title="It does not let me get a new key">
+        First, you **must** complete all checkpoints.
+        Start completing the checkpoints by pressing the "START" button.
+
+        **Do NOT attempt to bypass key system or you will be blacklisted.**
+
+        Once you have completed all of the checkpoints, the progress bar should be fully green and the button now says "DONE".
+
+        If you already have a key, you need to renew it.
+        If you are on mobile, swipe left on the key, and under "ACTIONS", press the orange button with the text "RENEW".
+
+        If you do not have a key, press "+ GET A NEW KEY"
+
+        If an error appears, please read the rest of the FAQ.
+        If your error is not answered on this page, please create a ticket in our [Discord server](https://discord.gg/luarmor).
+    </Accordion>
+
+    <Accordion title="How to reset my HWID?">
+        First, you **must** complete all checkpoints.
+        Start completing the checkpoints by pressing the "START" button.
+
+        **Do NOT attempt to bypass key system or you will be blacklisted.**
+
+        Once you have completed all of the checkpoints, the progress bar should be fully green and the button now says "DONE".
+        
+        If you are on mobile, swipe left on the key, and under "ACTIONS", press the green button with an hourglass symbol that has the text "+H".
+        That button will add time onto your key and reset your HWID.
+
+        If that option is not available, the script owner has disabled it and you must contact them for further help.
+    </Accordion>
+
+    <Accordion title="Problem with target redirection">
+        > There is a problem with target redirection, therefore yoru result can not be verified at the moment.
+        > You can create a ticket in gg/luarmor and send this screenshot.
+        > You can also try incognito tab to fix it.
+
+        If you get the error above, try the following steps:
+
+        <Steps>
+            <Step title="Try again in a private/incognito tab">
+                As the error tells you, try to complete all of the checkpoints again within an incognito or private tab.
+                If you do not know what that is, please [Google](https://google.com) how to.
+            </Step>
+            <Step title="Try another device">
+                If the previous step did not work, try again on another device.
+                For example, on a **different** computer or phone.
+            </Step>
+            <Step title="Try another network">
+                If a different device did not help, try again using a VPN or on your mobile data.
+            </Step>
+            <Step title="Use a different script">
+                If all of the above did not work, it's possible that the script you want to use has not been configured correctly.
+                Try contacting the script owner.
+                If multiple people have the same issue as you, **consistently**, then the script owner needs to fix it themselves.
+                
+                However, if you are the only one, there's nothing else to be done.
+                In that case, please try a different script entirely.
+            </Step>
+        </Steps>
+    </Accordion>
+
+    <Accordion title="You need to connect your discord account">
+        > You need to connect your discord account to perform this action.
+        > Please reload the page.
+
+        As the error says, reload the page and you will be asked to connect your Discord account.
+
+        If it does not work, follow these steps:
+
+        <Steps>
+            <Step title="Reload the page">
+                Reload the page, it should bring you to the Discord website.
+
+                **Do not press anything else.**
+            </Step>
+            <Step title="Copy the link">
+                While on the Discord site, copy the link you were redirected to.
+            </Step>
+            <Step title="Send the link on Discord">
+                Go onto Discord and paste the link into **any** chat.
+            </Step>
+            <Step title="Open the link">
+                Open the Discord link from inside the Discord app.
+                This should ensure Discord recognises your account.
+            </Step>
+        </Steps>
+    </Accordion>
+
+    <Accordion title="Blacklisted">
+        If you got blacklisted, it likely was **not** a mistake.
+        Please do not ask for an unblacklist, unless you are 100% sure that you are in the right.
+
+        Luarmor has state-of-the-art bypass detections, and we can easily tell when you do attempt to bypass.
+        If you make a ticket asking to get unblacklisted, when you did bypass, you may get banned from further tickets.
+
+        If you wish to appeal, please make a ticket inside of the [Discord](https://discord.gg/luarmor) with a screenshot of the blacklist message.
+        Make sure that the error code is visible.
     </Accordion>
 </AccordionGroup>
 
 ## Running scripts
 
 <AccordionGroup>
-    <Accordion title="Your script isn't working">
-        To test whether it's an issue on your end or Luarmor's, make sure "Silent Mode" is disabled in the script settings. If you see that Luarmor has successfully authenticated in F9 console, then the issue is 100% with your script. If you see a Luarmor error, please refer to these docs or ask for support, if your issue is not here.
+    <Accordion title="Nothing happens after entering the key">
+        This is not an issue with Luarmor.
+        Please contact the script owner.
     </Accordion>
-    <Accordion title="My script keeps crashing">
-        This is 100% an issue with your script. However, [script optimisations](./scripting/optimisation.mdx) may help.
+
+    <Accordion title="The script is crashing">
+        If the script you are using is crashing when you execute, this is usually an issue with the script itself.
+        To check, use another executor.
+        If you still crash, please contact the script owner and let them know.
+
+        This is not an issue that Luarmor can solve.
     </Accordion>
-    <Accordion title="attempt to index thread with 'Send'">
-        This happens due to a bad websocket implementation within the exploit that is being used. To fix this, either:
-        - use a different executor
-        - ask the script owner to disable the "Heartbeat" feature in their script
+
+    <Accordion title="The script get stuck on 95% Finalizing">
+        Within the developer console, if the script gets stuck on 95% Finalizing, try executing a few more times.
+        The issue in this scenario is the executor, usually Xeno.
+
+        Please use a different executor like [Nucleus](https://nucleus.rip), a **safe**, 100% sUNC/UNC, keyless executor.
     </Accordion>
-    <Accordion title="My modules don't work with Luarmor">
-        Luarmor does not return the main function. This means returning anything at the end of the script is not supported. To fix this, you need to assign your module to a global variable.
+
+    <Accordion title="HttpError: Timedout">
+        If you get HTTP errors in the console or kick message, this means there is an issue with your internet.
+        To fix the issue, use a VPN or try a custom DNS like [1.1.1.1](https://one.one.one.one/).
     </Accordion>
-</AccordionGroup>
 
-
-## Discord bot
-
-<AccordionGroup>
-    <Accordion title="This bot can't join more servers">
-        Ensure that you have tried ALL of the available bots listed [here](https://luarmor.net/bot). If none are addable, please wait for us to upload a new bot which you can use.
-    </Accordion>
-    <Accordion title="Failed to compensate">
-        This error happens when one of the keys has an expiration that may overflow the 32-bit integer limit. Essentially, make sure every key has an expiration before 2038. If you want a key to last forever (lifetime), then do not set an expiration date.
-    </Accordion>
-</AccordionGroup>
-
-
-## Verification
-
-<AccordionGroup>
-    <Accordion title="Rejection">
-        If your script got rejected, it is becuase it did not meet the [rules and limitations](./scripting/verification#rules-and-limitations). Please either:
-        - fix the issues and resubmit
-        - disable `Verification` for the script
+    <Accordion title="Luarmor V4 loader failed to fetch a chunk: attempt to compare number <= nil">
+        If you get HTTP errors in the console or kick message, this means there is an issue with your internet.
+        To fix the issue, use a VPN or try a custom DNS like [1.1.1.1](https://one.one.one.one/).
     </Accordion>
 </AccordionGroup>
 
@@ -98,14 +166,25 @@ When using Luarmor, you may come across some errors or issues. This page will he
 
 <AccordionGroup>
     <Accordion title="What is Luarmor?">
-        Luarmor is a service for people who want to make scripts. It adds a whitelist onto your script and obfuscates everything. If you are here wanting to use scripts, you are in the wrong place. You likely came here from the Luarmor Ad Rewards. If you are having issues with the Ad Reward system then please tell us. Otherwise, contact the script owners. However, since Luarmor has so many customers, we cannot tell you who they are. You must find the script owners yourself.
+        Luarmor is a service for people who want to make scripts.
+        It adds a whitelist onto your script and obfuscates everything.
+        If you are here wanting to use scripts, you are in the wrong place.
+        You likely came here from the Luarmor Ad Rewards.
+        If you are having issues with the Ad Reward system then please tell us.
+        Otherwise, contact the script owners.
+        However, since Luarmor has so many customers, we cannot tell you who they are.
+        You must find the script owners yourself.
     </Accordion>
     <Accordion title="Help, I've been scammed!">
         <Warning>
-            Failure to provide enough proof will result in your ticket being closed without any further investigation, and possibly a ban. It's **very** important that you provide as much information as possible when opening the ticket, instead of us having to ask you for it.
+            Failure to provide enough proof will result in your ticket being closed without any further investigation, and possibly a ban.
+            It's **very** important that you provide as much information as possible when opening the ticket, instead of us having to ask you for it.
         </Warning>
 
-        Unfortunately, our support staff cannot help you with this and it's very unlikely we will be able to investigate much. However, if you open a ticket and provide **FULL** details, then we may be able to help you. Please provide:
+        Unfortunately, our support staff cannot help you with this and it's very unlikely we will be able to investigate much.
+        However, if you open a ticket and provide **FULL** details, then we may be able to help you.
+        
+        Please provide:
         - the scammer's username
         - the scammer's Discord server
         - proof of purchase
@@ -113,27 +192,14 @@ When using Luarmor, you may come across some errors or issues. This page will he
         - and any other relevant information that can strengthen your case
     </Accordion>
     <Accordion title="I've found a way to detect Luarmor">
-        Before you get too excited, please enable "Silent Mode" in the script and check whether the detection still works. If it does, then please report it to us and let us know that you have silent mode enabled.
-    </Accordion>
-    <Accordion title="I've purchased with Patreon, what now?">
-        <Note>
-            We manually give invite codes for Patreon members. You will need to repeat this process each month, or each time you want to renew. If your Patreon charge data desyncs from Luarmor, please make a ticket and we can extend your days to align them.
-        </Note>
-        <Steps>
-            <Step title="Link Discord to Patreon">
-                To get your `User` rule, you must link your Discord to Patreon. If you are unsure how to do this, please refer to [this guide](https://support.patreon.com/hc/en-us/articles/212052266-Getting-Discord-access) by Patreon.
-            </Step>
-            <Step title="Open a ticket">
-                Open a ticket in the [Discord server](https://discord.gg/luarmor), making sure you have the `Subscribed via Patreon` role before making a ticket. Then state that you have bought Luarmor for patreon. After that, wait for us to invite you. Note that we are EU based.
-            </Step>
-            <Step title="Register">
-                Congratulations on purchasing Luarmor! Now follow [this guide](./quickstart.mdx#creating-your-account) to register your account.
-            </Step>
-        </Steps>
+        Before you get too excited, please enable "Silent Mode" in the script and check whether the detection still works.
+        If it does, then please report it to us and let us know that you have silent mode enabled.
     </Accordion>
     <Accordion title="I want to add support for my executor">
         <Warning>
-            If you exploit is external or uses Xeno as a base, you will not get support. In this case, your only option is to:
+            If you exploit is external or uses Xeno as a base, you will not get support.
+
+            In this case, your only option is to:
             1. Set `identifyexecutor` to return the same as Xeno
             2. Use `Xeno-Fingerprint`
             3. Set the `User-Agent` the same as Xeno
@@ -144,6 +210,11 @@ When using Luarmor, you may come across some errors or issues. This page will he
                 - Follow the [UNC for identifyexecutor too](https://github.com/unified-naming-convention/NamingStandard/blob/main/api/misc.md#identifyexecutor)
             </Step>
             <Step title="Headers">
+                <Note>
+                    Each field inside `Roblox-Session-Id` **must** have the value of `game.PlaceId`.
+                    However, `Roblox-Game-Id` and `Roblox-Session-Id` are optional.
+                </Note>
+
                 <Accordion title="For game:HttpGet">
                     - `User-Agent` = `Roblox/WinInet`
                     - `Roblox-Game-Id` = `game.JobId`
@@ -166,8 +237,104 @@ When using Luarmor, you may come across some errors or issues. This page will he
                 <Warning>
                     If the script fails at any point, make sure to check F9 and report that too.
                 </Warning>
-                The previous step should have copied the result to your clipboard. Paste this in a **support** ticket in the [Discord server](https://discord.gg/luarmor) and we will review it.
+                The previous step should have copied the result to your clipboard.
+                Paste this in a **support** ticket in the [Discord server](https://discord.gg/luarmor) and we will review it.
             </Step>
         </Steps>
+    </Accordion>
+</AccordionGroup>
+
+# Script Owners
+
+## Uploading scripts
+
+<AccordionGroup>
+    <Accordion title="Luau is not fully supported">
+        While Luraph supports Luau fully, Luarmor does not.
+        Therefore, you must remove some Luau features from your script before uploading it to Luarmor.
+        
+        This includes:
+        - any types
+        - inline ternary via `if` statement:
+        ```lua
+        -- this does not work
+        local maxValue = if value > 10 then 10 else value end
+
+        -- instead, use:
+        local maxValue
+        if value > 10 then
+            maxValue = 10
+        else
+            maxValue = value
+        end
+        ```
+
+        For more information, view the Luau docs [here](https://luau-lang.org/syntax).
+
+        <Accordion title="Automatically support via darklua">
+            <Steps>
+                <Step title="Go to the playground">
+                    A web version of darklua can be accessed [here](https://darklua.com/try-it/?configuration=%7B%22rules%22%3A%5B%22convert_luau_number%22%2C%22remove_comments%22%2C%22remove_compound_assignment%22%2C%22remove_interpolated_string%22%2C%22remove_if_expression%22%2C%22remove_types%22%5D%7D).
+                </Step>
+                <Step title="Paste your code">
+                    Paste your code into the left box.
+                </Step>
+                <Step title="Press the format button">
+                    To ensure everything worked, press the "Configure" button, then press the "format" button on the left panel
+                </Step>
+                <Step title="Copy the code">
+                    <Note>
+                        Press `CTRL + A` to select all, then `CTRL + C` to copy, instead of manually selecting the code.
+                    </Note>
+
+                    Copy the code from the right box and paste it into Luarmor.
+                </Step>
+            </Steps>
+        </Accordion>
+    </Accordion>
+    <Accordion title="The line count isn't making sense / matching up">
+        Luarmor adds its own code before obfuscation which changes the line count.
+        Therefore the line count is not accurate and unreliable.
+    </Accordion>
+</AccordionGroup>
+
+## Running scripts
+
+<AccordionGroup>
+    <Accordion title="Your script isn't working">
+        To test whether it's an issue on your end or Luarmor's, make sure "Silent Mode" is disabled in the script settings.
+        If you see that Luarmor has successfully authenticated in F9 console, then the issue is 100% with your script.
+        If you see a Luarmor error, please refer to these docs or ask for support, if your issue is not here.
+    </Accordion>
+    <Accordion title="My script keeps crashing">
+        This is 100% an issue with your script.
+        However, [script optimisations](./scripting/optimisation.mdx) may help.
+    </Accordion>
+    <Accordion title="attempt to index thread with 'Send'">
+        This happens due to a bad websocket implementation within the exploit that is being used.
+        
+        To fix this, either:
+        - use a different executor
+        - ask the script owner to disable the "Heartbeat" feature in their script
+    </Accordion>
+    <Accordion title="My modules don't work with Luarmor">
+        Luarmor does not return the main function.
+        This means returning anything at the end of the script is not supported.
+        To fix this, you need to assign your module to a global variable.
+    </Accordion>
+</AccordionGroup>
+
+
+## Discord bot
+
+<AccordionGroup>
+    <Accordion title="This bot can't join more servers">
+        Ensure that you have tried ALL of the available bots listed [here](https://luarmor.net/bot).
+        If none are addable, please wait for us to upload a new bot which you can use.
+    </Accordion>
+    <Accordion title="Failed to compensate">
+        This error happens when one of the keys has an expiration that may overflow the 32-bit integer limit.
+        Essentially, make sure every key has an expiration before 2038.
+        If you want a key to last forever (lifetime), then do not set an expiration date.
     </Accordion>
 </AccordionGroup>
