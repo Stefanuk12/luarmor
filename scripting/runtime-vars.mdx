@@ -5,7 +5,11 @@ title: Runtime Variables
 Luarmor has runtime variables that allows you to access to user details such as Discord ID, total executions, script name, premium, user note, etc..
 
 <Warning>
-    Luarmor does not protect these runtime variables and they can be hooked and modified maliciously. Make sure to add your own protections, if needed.
+    Luarmor does not protect these runtime variables and they can be hooked and modified maliciously.
+    Make sure to add your own protections, if needed.
+
+    Also, they are not updated at all.
+    You will need to track updates for variables like `LRM_SecondsLeft` **yourself**.
 </Warning>
 
 They can be used for a lot of things. Check out this example:
@@ -14,6 +18,7 @@ They can be used for a lot of things. Check out this example:
 </Frame>
 
 ## Every runtime variable
+
 You can see a full list of runtime variables here:
 
 <AccordionGroup>
@@ -34,5 +39,8 @@ You can see a full list of runtime variables here:
     </Accordion>
     <Accordion title="LRM_UserNote">
         The user note. It will be `Not specified` by default.
+    </Accordion>
+    <Accordion title="LRM_ScriptVersion">
+        The version of the script, i.e. `0.0.0.1`.
     </Accordion>
 </AccordionGroup>

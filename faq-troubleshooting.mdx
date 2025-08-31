@@ -8,6 +8,8 @@ This page is split into two parts, one for script owners and another for script 
 
 ## Script Users
 
+If you want an executor, we recommend [Nucleus](https://nucleus.rip)!
+
 ### Getting a key (Ad Rewards)
 
 <AccordionGroup>
@@ -161,6 +163,22 @@ This page is split into two parts, one for script owners and another for script 
         If you get HTTP errors in the console or kick message, this means there is an issue with your internet.
         To fix the issue, use a VPN or try a custom DNS like [1.1.1.1](https://one.one.one.one/).
     </Accordion>
+
+    <Accordion title="HWID is too long or too short">
+        This error happens because you use a bad spoofer.
+        If you are on an emulator, use a different executor or re-generate your HWID.
+
+        However, on Windows, follow these steps:
+        1. Press the Windows (⊞) button
+        2. Type `cmd`
+        3. Right click on "Command Prompt"
+        4. Press on "Run as administrator"
+        5. Copy and paste the following command, and press enter to run it
+        ```
+        powershell.exe -Command "Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\IDConfigDB\Hardware Profiles\0001' -Name 'HwProfileGuid' -Value ([guid]::NewGuid().ToString())"
+        ```
+        6. Restart Roblox and your executor
+    </Accordion>
 </AccordionGroup>
 
 ### Miscellaneous
@@ -247,9 +265,48 @@ This page is split into two parts, one for script owners and another for script 
 
 ## Script Owners
 
+### Purchasing
+
+<AccordionGroup>
+    <Accordion title="How long does crypto payments take">
+        Crypto payments from [the official site](https://luarmor.net/crypto) can take 10-60 minutes.
+        Make sure you send the exact amount, accounting for fees.
+
+        If you send insufficient funds, you will get an email about it.
+        In that event, make a ticket and we can invite you manually.
+    </Accordion>
+    <Accordion title="How much is the Enterprise plan?">
+        $120 USD monthly, crypto only.
+    </Accordion>
+    <Accordion title="Is there lifetime?">
+        Luarmor does not sell lifetime in any circumstance.
+        However, you can bulk buy invite codes to get yearly, for example.
+        
+        Please make a ticket if you want a discount on bulk invite codes.
+    </Accordion>
+</AccordionGroup>
+
+### Account management
+
+<AccordionGroup>
+    <Accordion title="I didn't recieve/lost my API key">
+        Make sure to check your (spam) email from an email from Luarmor.
+        If you cannot find it, please request the API key to be sent to you [via email](mailto:contact@luarmor.net).
+    </Accordion>
+    <Accordion title="I want to change something about my account">
+        If you want to change your email, Discord ID, request account deletion, etc., please do [via email](mailto:contact@luarmor.net).
+    </Accordion>
+</AccordionGroup>
+
 ### Uploading scripts
 
 <AccordionGroup>
+    <Accordion title="How do I set all of this up?">
+        Please read the following information:
+        - [Quickstart guide](./quickstart.mdx)
+        - [Ad rewards guide](https://docs.luarmor.net/ad-system-rewards)
+        - [Discord bot guide](./discord-bot.mdx)
+    </Accordion>
     <Accordion title="Luau is not fully supported">
         While Luraph supports Luau fully, Luarmor does not.
         Therefore, you must remove some Luau features from your script before uploading it to Luarmor.
@@ -297,6 +354,18 @@ This page is split into two parts, one for script owners and another for script 
         Luarmor adds its own code before obfuscation which changes the line count.
         Therefore the line count is not accurate and unreliable.
     </Accordion>
+    <Accordion title="I cannot make a new project">
+        Projects are like folders for your scripts.
+        You need to upgrade your plan if you have reached your limit.
+        
+        Note that keys are project scoped, meaning a person with a key within a project can execute all scripts inside that project (folder).
+    </Accordion>
+    <Accordion title="How to make a key system GUI?">
+        You can use [this template](https://github.com/Luckyware-Softworks/Example-Ad-Reward-Loader).
+    </Accordion>
+    <Accordion title="Where is the script ID and project ID">
+        ![The Luarmor dashboard with the ids underlined in red](./images/project_script_id.png)
+    </Accordion>
 </AccordionGroup>
 
 ### Running scripts
@@ -323,6 +392,41 @@ This page is split into two parts, one for script owners and another for script 
         This means returning anything at the end of the script is not supported.
         To fix this, you need to assign your module to a global variable.
     </Accordion>
+    <Accordion title="hook has more upvalues than original">
+        This error happens due to obfuscation.
+        To fix it, call `LPH_NO_UPVALUES` on your hookfunction's hook as shown below in the before and after.
+        
+        Note this is an example!
+        
+        ```lua
+        local old
+        old = hookfunction(f, function(...)
+            return old(...)
+        end)
+        ```
+
+        ->
+
+        ```lua
+        local old
+        old = hookfunction(f, LPH_NO_UPVALUES(function(...)
+            return old(...)
+        end))
+        ```
+
+        If you are still having issues, make sure the argument you give to `LPH_NO_UPVALUES` is a constant function, not a variable.
+        If you want to assign a name to the function, you can do something like this:
+
+        ```lua
+        local old
+        local FunctionNameHere = LPH_NO_UPVALUES(function(...)
+            -- code
+            return old(...)
+        end)
+
+        old = hookfunction(f, FunctionNameHere)
+        ```
+    </Accordion>
 </AccordionGroup>
 
 
@@ -337,5 +441,9 @@ This page is split into two parts, one for script owners and another for script 
         This error happens when one of the keys has an expiration that may overflow the 32-bit integer limit.
         Essentially, make sure every key has an expiration before 2038.
         If you want a key to last forever (lifetime), then do not set an expiration date.
+    </Accordion>
+    <Accordion title="Remove role for ad rewards (free users)">
+        If you want to disallow free users from getting your premium user role, you need to make a different project just for them.
+        Remember that keys are project based.
     </Accordion>
 </AccordionGroup>
