@@ -106,8 +106,61 @@ If you want an executor, we recommend [Nucleus](https://nucleus.rip)!
             </Step>
         </Steps>
     </Accordion>
+</AccordionGroup>
 
-    <Accordion title="Blacklisted">
+### Blacklisted (Ad Rewards)
+<AccordionGroup>
+    <Accordion title="Why did I get blacklisted?">
+        You were **temporarily** blacklisted from **all** Luarmor ad links for one of the following reasons:
+
+        <Steps>
+            <Step title="Bypass service">
+                You have been detected using a bypass service for the ad links.
+                Notable examples include:
+
+                - [bypass.city](https://bypass.city)
+                - [bypass.vip](https://bypass.vip)
+                - [linkunlocker](https://linkunlocker.com)
+            </Step>
+            <Step title="Userscript or plugin">
+                <Warning>
+                    It does not matter if you used it or not.
+                    It is a valid blacklist regardless, if detected.
+                </Warning>
+
+                A userscript or plugin was detected on the Luarmor page that is known for bypassing.
+                Notable examples include:
+
+                - [Tampermoney](https://www.tampermonkey.net/)
+                - [Violentmonkey](https://violentmonkey.github.io/)
+                - [Luperly](https://luperly.fun/)
+            </Step>
+            <Step title="Bypassing a link created by the Luarmor ad system">
+                If you bypass any links created by the Luarmor ad system, you may get blacklisted.
+                Some links may include, but is not limited to:
+                
+                - [work.ink](https://work.ink)
+                - [lootlabs](https://lootlabs.gg)
+                - [linkvertise](https://linkvertise.com)
+            </Step>
+        </Steps>
+    </Accordion>
+    <Accordion title="I am still blacklisted after trying to do it legit again">
+        Luarmor blacklists apply across **all other** Luarmor links.
+        This means even if you try again with a different script, you will still be blacklisted.
+
+        You must wait until your blacklist duration has ended before trying to complete other links,
+        or else you will get blacklisted again.
+    </Accordion>
+    <Accordion title="My blacklist is a mistake">
+        <Warning>
+            When blacklisted, your IP address and current browser session is also blacklisted.
+            It's possible another person in your household got you blacklisted, or you were using a VPN.
+            In this case, the blacklist **is still** valid, and you must wait the blacklist duration.
+
+            **DO NOT** make a ticket in this case, and **wait** the blacklist duration instead.
+        </Warning>
+
         If you got blacklisted, it likely was **not** a mistake.
         Please do not ask for an unblacklist, unless you are 100% sure that you are in the right.
 
@@ -116,6 +169,11 @@ If you want an executor, we recommend [Nucleus](https://nucleus.rip)!
 
         If you wish to appeal, please make a ticket inside of the [Discord](https://discord.gg/luarmor) with a screenshot of the blacklist message.
         Make sure that the error code is visible.
+    </Accordion>
+    <Accordion title="What should I do if I got blacklisted?">
+        You **must wait** the blacklist cooldown.
+
+        While you are blacklisted, you can try looking for other scripts that do not use the Luarmor key system.
     </Accordion>
 </AccordionGroup>
 
@@ -165,6 +223,22 @@ If you want an executor, we recommend [Nucleus](https://nucleus.rip)!
         powershell.exe -Command "Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\IDConfigDB\Hardware Profiles\0001' -Name 'HwProfileGuid' -Value ([guid]::NewGuid().ToString())"
         ```
         6. Restart Roblox and your executor
+    </Accordion>
+
+    <Accordion title="I am blacklisted">
+        <Note>
+            This only applies when you get kicked when **running** the script, not the ad rewards system.
+        </Note>
+
+        If the blacklist is permanent and tells you to appeal within the Luarmor discord, this is because your IP address is blacklisted.
+        In this case, if you are on a VPN, turn it off and on to change your IP address.
+        If you are not on a VPN, and you truely believe its false, then make a ticket in [the Discord](https://discord.gg/luarmor).
+
+        In all other cases, the script owner is the only person that can unblacklist you.
+        **Luarmor staff cannot unblacklist a project-based blacklist** placed either automatically or by the script owner.
+        **Please contact the script owner instead**.
+        It is also possible that your HWID is banned on another key, while your actual key is not banned.
+        Again, talk to the script owner about this.
     </Accordion>
 </AccordionGroup>
 
