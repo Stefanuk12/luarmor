@@ -235,10 +235,47 @@ To buy an invite code and create your account, see [Creating your account](/quic
                     If the script fails at any point, check the F9 console and include its output in your report.
                 </Warning>
 
+                <Warning>
+                    If you are [spoofing another executor](#executor-developers) (for example Seliware), turn it off before running the test. The results you send must use your own executor's headers, otherwise we can't whitelist it.
+                </Warning>
+
                 The previous step should have copied the result to your clipboard.
                 Paste it into a **support** ticket in the [Discord server](https://discord.gg/luarmor) and we will review it.
             </Step>
         </Steps>
+    </Accordion>
+    <Accordion title="Can my executor run Luarmor scripts before it is whitelisted?">
+        Yes. You can spoof an executor that is already supported, such as Seliware. Send that executor's headers on requests to Luarmor, and your own headers everywhere else.
+
+        For requests to `luarmor.net` (including subdomains like `api.luarmor.net`):
+
+        | Header | Value |
+        | --- | --- |
+        | `Seliware-Fingerprint` | Your HWID |
+        | `User-Agent` | `Seliware/1.0` |
+
+        For every other site, keep using your own `YOUREXECUTOR-Fingerprint` and `User-Agent: YOUREXECUTOR/1.0`.
+
+        ```cpp
+        // host is the domain the request is going to, e.g. "api.luarmor.net"
+        bool isLuarmor = host == "luarmor.net" || host.ends_with(".luarmor.net");
+
+        cpr::Header Headers;
+        if (isLuarmor)
+        {
+            Headers["Seliware-Fingerprint"] = HWID;
+            Headers["User-Agent"] = "Seliware/1.0";
+        }
+        else
+        {
+            Headers["YOUREXECUTOR-Fingerprint"] = HWID;
+            Headers["User-Agent"] = "YOUREXECUTOR/1.0";
+        }
+        ```
+
+        <Warning>
+            Turn spoofing off before you request a whitelist. If your compatibility test results contain Seliware headers, we can't whitelist your executor. See [Report the results to us](#executor-developers) above.
+        </Warning>
     </Accordion>
     <Accordion title="I've found a way to detect Luarmor">
         First, enable **Silent Mode** in the script and check whether the detection still works.
