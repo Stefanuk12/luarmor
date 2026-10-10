@@ -1,32 +1,43 @@
-# Mintlify Starter Kit
+# Luarmor Documentation
 
-Click on `Use this template` to copy the Mintlify starter kit. The starter kit contains examples including
+The source for the [Luarmor](https://luarmor.net) documentation, built with [Mintlify](https://mintlify.com).
 
-- Guide pages
-- Navigation
-- Customizations
-- API Reference pages
-- Use of popular components
+## Structure
 
-### Development
+| Path | Contents |
+|------|----------|
+| `mint.json` | Site config: navigation, tabs, redirects, colours |
+| `introduction.mdx`, `quickstart.mdx` | Getting started |
+| `discord-bot.mdx`, `features/` | Feature guides (Discord bot, ad rewards, webhook protection, source locker) |
+| `scripting/` | Writing scripts for Luarmor: optimisation, macros, runtime variables, key check library, verification |
+| `troubleshooting/` | Help for script users and script owners, plus common scams |
+| `api-reference/` | API tab: introduction, SDKs, and one page per endpoint under `endpoint/` |
+| `api-reference/openapi.json` | OpenAPI spec for the HTTP API |
+| `snippets/` | Reusable MDX snippets imported by pages |
+| `images/` | Screenshots, referenced as `/images/<name>` |
 
-Install the [Mintlify CLI](https://www.npmjs.com/package/mintlify) to preview the documentation changes locally. To install, use the following command
+## Development
+
+Install the [Mintlify CLI](https://www.npmjs.com/package/mintlify):
 
 ```
 npm i -g mintlify
 ```
 
-Run the following command at the root of your documentation (where mint.json is)
+Then, from the root of this repository (where `mint.json` is), run:
 
 ```
 mintlify dev
 ```
 
-### Publishing Changes
+The site is served at `http://localhost:3000`. Run `mintlify broken-links` before opening a pull request.
 
-Install our Github App to auto propagate changes from your repo to your deployment. Changes will be deployed to production automatically after pushing to the default branch. Find the link to install on your dashboard. 
+## Adding a page
 
-#### Troubleshooting
+1. Create an `.mdx` file with a `title` and `description` in its frontmatter. Don't add an `# H1`, as Mintlify renders the title.
+2. Add its path (without `.mdx`) to the right group in `mint.json`'s `navigation`.
+3. If you move or rename a page, add a `redirects` entry in `mint.json` so old links keep working.
 
-- Mintlify dev isn't running - Run `mintlify install` it'll re-install dependencies.
-- Page loads as a 404 - Make sure you are running in a folder with `mint.json`
+## Contributing
+
+Pull requests are welcome. For questions about Luarmor itself, join the [Discord server](https://discord.gg/luarmor).

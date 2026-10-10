@@ -1,0 +1,200 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Luarmor",
+  "colors": {
+    "primary": "#0D9373",
+    "light": "#07C983",
+    "dark": "#0D9373"
+  },
+  "favicon": "/favicon.png",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Features",
+            "pages": [
+              "discord-bot",
+              "features/ad-rewards",
+              "features/anti-bypass-policy",
+              "features/webhook-protection",
+              "features/source-locker",
+              "scripting/verification"
+            ]
+          },
+          {
+            "group": "Scripting",
+            "pages": [
+              "scripting/optimisation",
+              "scripting/macros",
+              "scripting/runtime-vars",
+              "scripting/key-check-library"
+            ]
+          },
+          {
+            "group": "Help",
+            "pages": [
+              "troubleshooting/script-users",
+              "troubleshooting/script-owners",
+              "troubleshooting/common-scams"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "api-reference/introduction",
+              "api-reference/sdk"
+            ]
+          },
+          {
+            "group": "API Management",
+            "pages": [
+              "api-reference/endpoint/api-management/get-api-status",
+              "api-reference/endpoint/api-management/get-api-key-details",
+              "api-reference/endpoint/api-management/get-api-key-stats"
+            ]
+          },
+          {
+            "group": "User Management",
+            "pages": [
+              "api-reference/endpoint/user-management/create-userkey",
+              "api-reference/endpoint/user-management/get-users",
+              "api-reference/endpoint/user-management/update-user",
+              "api-reference/endpoint/user-management/delete-userkey",
+              "api-reference/endpoint/user-management/reset-user-hwid",
+              "api-reference/endpoint/user-management/link-discord-id",
+              "api-reference/endpoint/user-management/blacklist-user",
+              "api-reference/endpoint/user-management/unban-user"
+            ]
+          },
+          {
+            "group": "Script Management",
+            "pages": [
+              "api-reference/endpoint/script-management/update-script",
+              "api-reference/endpoint/script-management/get-update-progress"
+            ]
+          },
+          {
+            "group": "For 3rd Parties",
+            "pages": [
+              "api-reference/external-key-check"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Website",
+          "href": "https://luarmor.net",
+          "icon": "globe"
+        },
+        {
+          "anchor": "Discord",
+          "href": "https://discord.gg/luarmor",
+          "icon": "discord"
+        }
+      ]
+    }
+  },
+  "logo": {
+    "light": "/logo/dark.png",
+    "dark": "/logo/dark.png"
+  },
+  "api": {
+    "openapi": "api-reference/openapi.json",
+    "mdx": {
+      "server": "https://api.luarmor.net",
+      "auth": {
+        "method": "key"
+      }
+    }
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "https://discord.gg/luarmor"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://luarmor.net/dashboard"
+    }
+  },
+  "footer": {
+    "socials": {
+      "discord": "https://discord.gg/luarmor"
+    }
+  },
+  "redirects": [
+    {
+      "source": "/faq-troubleshooting",
+      "destination": "/troubleshooting/script-users"
+    },
+    {
+      "source": "/luarmor-user-manual-and-f.a.q",
+      "destination": "/quickstart"
+    },
+    {
+      "source": "/ad-system-rewards",
+      "destination": "/features/ad-rewards"
+    },
+    {
+      "source": "/ad-system-rewards/anti-bypass-policy",
+      "destination": "/features/anti-bypass-policy"
+    },
+    {
+      "source": "/insane-optimization-tricks-and-lph-macro-usage",
+      "destination": "/scripting/optimisation"
+    },
+    {
+      "source": "/verified-safe-scripts",
+      "destination": "/scripting/verification"
+    },
+    {
+      "source": "/identifying-common-scams",
+      "destination": "/troubleshooting/common-scams"
+    },
+    {
+      "source": "/source-locker",
+      "destination": "/features/source-locker"
+    },
+    {
+      "source": "/webhook-protection",
+      "destination": "/features/webhook-protection"
+    },
+    {
+      "source": "/webhook-protection/useful-sample-scripts",
+      "destination": "/features/webhook-protection#examples"
+    },
+    {
+      "source": "/docs-for-3rd-parties/3rd-party-external-key-check-api",
+      "destination": "/api-reference/external-key-check"
+    },
+    {
+      "source": "/docs/luarmor-api-documentation",
+      "destination": "/api-reference/introduction"
+    },
+    {
+      "source": "/features/webhook-sample-scripts",
+      "destination": "/features/webhook-protection#examples"
+    }
+  ]
+}
