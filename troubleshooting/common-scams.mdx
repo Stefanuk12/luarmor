@@ -1,0 +1,406 @@
+---
+title: "Identifying Common Scams"
+description: "How to verify that a Discord server really offers what you are paying for, plus a list of known scam servers"
+sidebarTitle: "Common Scams"
+---
+
+This page shows you how to check whether a Discord server really offers what you are paying for.
+
+<Note>
+    You can find a [list of currently active scam servers](#known-scam-servers) at the bottom of this page.
+</Note>
+
+## Hints
+
+<Warning>
+    - If a seller offers unbelievably good features for a popular game, such as "rollback", "dupe" or "infinite something", be extra cautious before buying.
+    - If the seller claims to have a *"buyers only"* server that you will be invited to after purchase, this should raise a **red flag**, especially if their public server is read-only and **no one can send a message**.
+    - If the seller only accepts non-refundable payment methods such as crypto, gift cards or in-game items, this should raise a **red flag**.
+    - A "verified by Luarmor" card is **not** proof that a seller is legit. [Verified scripts](/scripting/verification) have been discontinued, and being verified only ever meant the script was free of malware.
+</Warning>
+
+## Steps to identify
+
+If a seller claims to use Luarmor, you might assume that they are legitimate. However, this is not always the case. Anyone can purchase a Luarmor API key and invite the bot to their server.
+
+We take down scam servers when they are reported, but some go unnoticed because no one reports them. (See [how to report a scam server](#how-to-report-a-scam-server).)
+
+<Steps>
+    <Step title="Check if the Discord bot is really in the server">
+        Here is an example:
+
+        <Frame caption='Known scam server "Glacier X" - Server ID: 1140429912369537148'>
+            ![Glacier X script-panel channel annotated: the seller claims the bot is in a "buyers only" server, the panel is only a screenshot, and the messages are inconsistent](/images/common-scams-glacier-x-buyer-server.png)
+        </Frame>
+
+        There is **no reason** for a seller to have a "buyers only" server. Luarmor already has a [buyer role system](/discord-bot#buyer-role) that lets sellers separate buyers and non-buyers within a single Discord server.
+
+        You may also notice that the **Discord bot** is not in the server at all. This should be a massive red flag for any buyer.
+
+        Here is another example:
+
+        <Frame caption='Scam server "Project Zero" - Server ID: 1072525328318214144'>
+            ![Project Zero get-script channel where the Luarmor panel says "This interaction failed" and the bot has no mutual servers](/images/common-scams-project-zero-bot-missing.png)
+        </Frame>
+
+        The Discord bot was invited at some point but is no longer in the server, and the seller is making false claims about it. This should convince you to leave the server immediately.
+    </Step>
+
+    <Step title="Verify the Discord bot is real">
+        <Info>
+            Currently active Luarmor bots can be found at [https://luarmor.net/bot](https://luarmor.net/bot).
+        </Info>
+
+        If the Discord bot is **in the server** and seems to be responsive, open its profile, click the **⋮** menu next to **Message** and choose **Copy User ID**. Then compare it to the IDs on the official bot page linked above. Both the username (e.g. `Luarmor#3309`) and the ID must match the same entry.
+
+        <Frame caption="A bot that might be real">
+            ![Luarmor bot profile with the Copy User ID option highlighted](/images/common-scams-copy-bot-user-id.png)
+        </Frame>
+
+        <Frame caption="https://luarmor.net/bot">
+            ![Official bot invite list on luarmor.net/bot with the username Luarmor#3309 and ID 1134118860119887882 highlighted as matching](/images/common-scams-official-bot-ids.png)
+        </Frame>
+
+        Official bots at the time of the screenshot (always check [luarmor.net/bot](https://luarmor.net/bot) for the current list):
+
+        | Bot | Username | User ID |
+        | --- | --- | --- |
+        | Bot 7 (latest) | `Luarmor#6199` | `1267908035632959590` |
+        | Bot 6 | `Luarmor#7175` | `1252444857977536602` |
+        | Bot 5 | `Luarmor#2977` | `1232775347037012068` |
+        | Bot 4 | `Luarmor#5671` | `1214516393186168852` |
+        | Bot 3 | `Luarmor#3309` | `1134118860119887882` |
+        | Bot 2 | `Luarmor#4108` | See [luarmor.net/bot](https://luarmor.net/bot) |
+        | Bot 1 | `Luarmor#1476` | `1150311440352292876` |
+
+        If everything seems to be consistent, you can proceed to the next step.
+    </Step>
+
+    <Step title="Read what others said about it">
+        If the server has a `#vouches` channel, check what is posted there.
+
+        <Warning>
+            If all of the vouches are screenshots posted by the same few people, this should raise another massive **red flag**. There is **no way to verify if a screenshot is real.** Anyone can edit or fake one.
+        </Warning>
+
+        Here are two examples of bad vouch channels:
+
+        ![Project Zero vouches channel made up entirely of screenshots posted by the server owner](/images/common-scams-vouches-project-zero.png)
+
+        ![Glacier X buyer-feedback channel with screenshot-only vouches and fake-looking keys annotated](/images/common-scams-vouches-glacier-x.png)
+
+        In both channels, every screenshot was posted by the same 1-2 accounts, which belong to the server owners, so there is no way to know whether the vouches are real.
+
+        Even if vouches are posted by different accounts, check whether each account belongs to a real person (for example, a booster badge, an old join date, activity in other communities, or mutual servers).
+    </Step>
+</Steps>
+
+### Still not sure?
+
+You can create a ticket in the `#support` category in our Discord server ([discord.gg/luarmor](https://discord.gg/luarmor)) and ask whether a seller is legitimate. Include the seller's Discord server invite in the ticket (for example, `gg/jCHkq`).
+
+![Support ticket form asking whether a seller is legit, including their Discord invite](/images/common-scams-support-ticket-form.png)
+
+In the ticket form, fill in:
+
+| Field | What to write |
+| --- | --- |
+| What is this ticket about? | e.g. "I want to know if this seller is legit" |
+| What are you running? | The seller's Discord invite, what they claim to sell, and that they say they use Luarmor |
+
+## How to report a scam server?
+
+You can create a support ticket in our Discord ([discord.gg/luarmor](https://discord.gg/luarmor)) and send all the evidence you have.
+
+Please note that we are very skeptical about these reports and will **ignore your submission** if any of the information seems inconsistent to staff.
+
+<Warning>
+    Failure to provide enough proof will result in your ticket being closed without any further investigation, and possibly a ban.
+    It's **very** important that you provide as much information as possible when opening the ticket, instead of us having to ask you for it.
+</Warning>
+
+Unfortunately, if you have been scammed, our support staff may not be able to help, and we are unlikely to be able to investigate much.
+However, if you open a ticket with **full** details, we may be able to help.
+
+<Info>
+    Required details for a scam report:
+
+    - Valid server invite (send as `gg/abcdefg`).
+    - Screenshots of all channels in the server (especially `#vouches`, `#panel`, `#get-script` etc.).
+    - Server ID and owner IDs.
+    - The scammer's username.
+    - Proof of any payment you made, with screenshots of tickets / DMs. If you are banned from the server, send us the payment receipt or any proof of payment that clearly shows it was for that script.
+    - Proof that you did not receive what you paid for.
+    - Any other relevant information that can strengthen your case.
+
+    We will evaluate these details and **if they are using Luarmor**, we will take the necessary action. If they are not using Luarmor, there isn't much we can do.
+</Info>
+
+## Known scam servers
+
+<AccordionGroup>
+    <Accordion title="Cool Hub">
+        <Warning>
+            **"Cool Hub"** - Server ID: `1440134105449893890`
+
+            Owner: skibiditoiler_18 (ID: `1447161031083298947`)
+        </Warning>
+
+        ![Cool Hub script panel using a fake Luarmor-looking bot that will steal your items via whatever script it gives you](/images/common-scams-cool-hub-fake-bot.png)
+    </Accordion>
+
+    <Accordion title="Sapphire">
+        <Warning>
+            **"Sapphire"** - Server ID: `1272554424501276753` - [https://discord.com/invite/tCENbZW9zQ](https://discord.com/invite/tCENbZW9zQ) (scam)
+
+            YouTube channel: [https://www.youtube.com/@Sapphirehubb](https://www.youtube.com/@Sapphirehubb) (scam)
+
+            Owner IDs:
+            - `1130242795450400828` (trulyxavi)
+            - `1167913490099478610` (aleksia.1)
+            - `1130242795450400828` (32xavi)
+        </Warning>
+
+        ![Sapphire Hub private-version channel advertising a 150 euro "universal rollback"](/images/common-scams-sapphire-private-version.png)
+
+        ![Sapphire announcements with a fake Luarmor bot posting keys in a format Luarmor never uses](/images/common-scams-sapphire-fake-keys.png)
+
+        ![Dollhub script panel run by the same owner, using a remade fake Luarmor bot and a non-existent buyer server button](/images/common-scams-dollhub-fake-bot.png)
+    </Accordion>
+
+    <Accordion title="Dupeware">
+        <Warning>
+            **"Dupeware"** - Server ID: `1386086352503963669` (scam)
+
+            Owners:
+            - sillykittykat24 (ID: `1167913490099478610`)
+        </Warning>
+
+        <Frame caption="Fake bot - always verify at https://luarmor.net/bot">
+            ![Fake Luarmor#1020 bot whose only mutual server is Dupeware](/images/common-scams-dupeware-fake-bot.png)
+        </Frame>
+
+        <Frame caption="Scam server">
+            ![Dupeware terms of service channel posted by the owner sillykittykat24](/images/common-scams-dupeware-tos.png)
+        </Frame>
+
+        ![Dupeware general channel closed by the owner, annotated "Because server is a SCAM"](/images/common-scams-dupeware-general-closed.png)
+    </Accordion>
+
+    <Accordion title="Rinse Hub">
+        <Warning>
+            **"Rinse Hub"** - discord.gg/rinsehub
+
+            Owners:
+            - pereince (ID: `1095439101748068446`)
+        </Warning>
+
+        ![Rinse Hub dupe-logs channel with fake "item duped" notifications, owned by pereince](/images/common-scams-rinse-hub-dupe-logs.png)
+    </Accordion>
+
+    <Accordion title="exphub">
+        <Warning>
+            **"exphub"** - Server ID: `1345444408727965779` - discord.gg/exphub
+
+            Owners:
+            - pereince (ID: `1095439101748068446`)
+        </Warning>
+
+        ![Chat where the exphub owner tells a buyer "Ye U Got Skmmed" and asks how to make the server look more legit](/images/common-scams-exphub-scam-chat.png)
+
+        ![exphub script-updates channel with the owner's profile (pereince) open](/images/common-scams-exphub-owner.png)
+    </Accordion>
+
+    <Accordion title="ice development / gg/rollbacked">
+        <Warning>
+            **"ice development / gg/rollbacked"** - Server ID: `1272554424501276753`
+
+            Owner: same guy again
+
+            Invite: discord.gg/rollbacked
+        </Warning>
+
+        ![ice development luarmor channel with the owner ardwqwe's profile open](/images/common-scams-ice-development.png)
+    </Accordion>
+
+    <Accordion title="Vile">
+        <Warning>
+            **"Vile"** - Server ID: `1341138691426619479`
+
+            Invite: [https://discord.com/invite/fallencheats](https://discord.com/invite/fallencheats) (scam)
+
+            Owner ID: `1167913490099478610` (the same person behind several other servers on this list)
+        </Warning>
+
+        ![Vile giveaways channel with the owner ardwqwe's profile open](/images/common-scams-vile.png)
+    </Accordion>
+
+    <Accordion title="gg/rollbacked">
+        <Warning>
+            **"gg/rollbacked"** - Server ID: `1272554424501276753`
+
+            Owner: slittingwhores - ID: `1167913490099478610`
+        </Warning>
+
+        ![gg/rollbacked info channel showing a "verified by Luarmor" card to claim legitimacy](/images/common-scams-rollbacked-fake-verification.png)
+    </Accordion>
+
+    <Accordion title="Crystal">
+        <Warning>
+            **"Crystal"** - Server ID: `1272554424501276753` (new Valary server, rebranded and still a scam)
+
+            Owner:
+            - ardwqwe - ID: `1167913490099478610`
+
+            Invite: [discord.gg/7JhVAQ83ey](https://discord.com/invite/7JhVAQ83ey)
+        </Warning>
+
+        <Frame caption="Owner ID: 1167913490099478610">
+            ![Crystal info channel misusing a Luarmor verification card to claim the script is secure](/images/common-scams-crystal-fake-verification.png)
+        </Frame>
+
+        <Frame caption="Owner ID: 1167913490099478610">
+            ![Crystal giveaways channel promoting the Vile server and a YouTube video](/images/common-scams-crystal-giveaways.png)
+        </Frame>
+    </Accordion>
+
+    <Accordion title="Valary">
+        <Warning>
+            **"Valary"** - Server ID: `1272554424501276753` (the Divine Closet server, rebranded)
+
+            Owner:
+            - yuk1maa - `1167913490099478610`
+
+            Invite: [discord.gg/kfhh8XAR](https://discord.com/invite/kfhh8XAR)
+        </Warning>
+
+        ![Valary announcements channel advertising a Divine Hub "dupe" script](/images/common-scams-valary.png)
+    </Accordion>
+
+    <Accordion title="Divine Closet">
+        <Warning>
+            **"Divine Closet"** - Server ID: `1272554424501276753`
+
+            Owners:
+            - iceiceiceiceiceiceiceiceiceicei (ID: `1167913490099478610`)
+
+            This is the same server as "Divine Hub".
+        </Warning>
+
+        ![Divine Closet announcements offering the script in exchange for in-game pets, potions or Discord Nitro](/images/common-scams-divine-closet.png)
+    </Accordion>
+
+    <Accordion title="ETERNAL // HUB">
+        <Warning>
+            **"ETERNAL // HUB"** - Server ID: `1013175591291330701`
+
+            Owners:
+            - tateterrific (`782354501288984606`)
+            - pologofficial (`1183484166227107890`)
+        </Warning>
+
+        <Frame caption="ETERNAL // HUB with a fake rollback script.">
+            ![ETERNAL // HUB get-script channel claiming the panel is only available in the buyer server](/images/common-scams-eternal-hub.png)
+        </Frame>
+    </Accordion>
+
+    <Accordion title="DEPOSIT">
+        <Warning>
+            **"DEPOSIT"** - Server ID: `1289139433706356802`
+
+            Associated server IDs: `1291955873689636884` ("DEPOSIT SERVICES")
+
+            zerxal.lua (ID: `1298044510634512384`)
+
+            Owner IDs:
+            - 19vl (`908186953269256234`)
+            - nxcow (`1234676487844528138`)
+        </Warning>
+
+        ![Deposit services news channel where the seller offers the "deposit dh source" for 10 dollars](/images/common-scams-deposit-services.png)
+
+        <Frame caption="Proof: https://i.imgur.com/unJ35w2.png">
+            ![DEPOSIT psa channel annotated: one of our associates tried buying, sent the money, and got instantly blocked](/images/common-scams-deposit-psa.png)
+        </Frame>
+    </Accordion>
+
+    <Accordion title="Divine Hub">
+        <Warning>
+            **"Divine Hub"** - Server ID: `1272554424501276753`
+
+            Owner ID: elijahnana (`1167913490099478610`)
+        </Warning>
+
+        ![Divine Hub general channel with no chat, redirecting everyone to a "buyer server"](/images/common-scams-divine-hub.png)
+    </Accordion>
+
+    <Accordion title="SHHH">
+        <Warning>
+            **"SHHH"** - Server ID: `1272554424501276753`
+
+            Owner ID: unetsiedd (`1167913490099478610`)
+        </Warning>
+
+        <Frame caption="The rebranded Pierce Hub server, imitating another legitimate seller.">
+            ![SHHH info channel posting script IDs copied from another verified script; verified scripts only mean the code is free of malware, not that the seller is honest](/images/common-scams-shhh-fake-script-ids.png)
+        </Frame>
+    </Accordion>
+
+    <Accordion title="Xzz Scripts #1">
+        <Warning>
+            **"Xzz Scripts #1"** - Server ID: `1267437481301905440`
+
+            Owner ID: idc527 (`770035827681394708`)
+        </Warning>
+
+        ![Xzz Scripts #1 chat channel locked behind "access to this after being a customer"](/images/common-scams-xzz-scripts.png)
+    </Accordion>
+
+    <Accordion title="Pierce Hub">
+        <Warning>
+            **"Pierce Hub"** - Server ID: `1272554424501276753`
+
+            Owner ID: phantomsblood (ID: `1167913490099478610`)
+        </Warning>
+
+        <Frame caption='A screenshot of the "Pierce Hub" scam server.'>
+            ![Pierce Hub info channel showing a verification card without a script ID so nobody can check it](/images/common-scams-pierce-hub.png)
+        </Frame>
+    </Accordion>
+
+    <Accordion title="Project Zero">
+        <Warning>
+            **"Project Zero"** - Server ID: `1072525328318214144`
+
+            Owner IDs: (fwjagoda) `910809075384725504`, (autisticboy178) `1184592297111859282`
+        </Warning>
+
+        <Frame caption='A screenshot of the "Project Zero" Discord server.'>
+            ![Project Zero features channel advertising rollbacks and other too-good-to-be-true features](/images/common-scams-project-zero-features.png)
+        </Frame>
+    </Accordion>
+
+    <Accordion title="Glacier X">
+        <Warning>
+            **"Glacier X"** - Server ID: `1140429912369537148`
+
+            Owner ID: (twist_231o) `878653407639011328`
+        </Warning>
+
+        <Frame caption='A screenshot from the "Glacier X" Discord server.'>
+            ![Glacier X features channel advertising currency and item duplication](/images/common-scams-glacier-x-features.png)
+        </Frame>
+    </Accordion>
+
+    <Accordion title="pierce.luau">
+        <Warning>
+            **"pierce.luau"** - Server ID: `1072525328318214144` (same server as Project Zero)
+
+            Owner IDs: lamoriumum (`910809075384725504`), zonercm (`1184592297111859282`)
+        </Warning>
+
+        <Frame caption='This is the same server as "Project Zero", owned by the same people.'>
+            ![pierce.luau general channel with no chat, redirecting users to a "Pierce Buyer Cave" server](/images/common-scams-pierce-luau.png)
+        </Frame>
+    </Accordion>
+</AccordionGroup>

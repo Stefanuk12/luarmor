@@ -1,0 +1,331 @@
+---
+title: "Webhook Protection"
+description: "Send Discord webhooks from your script without exposing them to deletion, spam or nuking"
+---
+
+Luarmor offers an advanced webhook protection macro that you can use inside your script to prevent people from deleting, spamming or nuking your webhooks.
+
+<Info>
+    This feature is available in V4 loader scripts only, so make sure you enable the **Prefer V4 Loader** option on the dashboard when you create or edit a script.
+
+    ![The "Prefer V4 Loader" toggle enabled in the script settings](/images/webhook-protection-prefer-v4-loader.png)
+
+    **Prefer V4 Loader** is a beta setting. It encrypts the file in HTTP traffic and in the local cache, and runs a bootstrapper script at execution. See the [script options](/quickstart#uploading-your-script) for the other settings.
+</Info>
+
+<Warning>
+    Executions must be made with a valid `script_key` in order to use this macro. If the execution is made without a key (for example, in a Free for All (FFA) script), the webhook message will not be delivered.
+</Warning>
+
+## How to implement it in your script
+
+The protection is a macro, `LRM_SEND_WEBHOOK`, which you call in your script wherever you want to send a secure webhook request.
+
+Syntax: `LRM_SEND_WEBHOOK(<url constant>, <webhook template>)`
+
+It takes 2 arguments. The first argument is a constant string literal that contains the webhook URL. The second argument is a constant table literal containing the JSON payload of your webhook message.
+
+**Do not** pass variables as arguments. Both arguments must be constant literals, or the macro won't work.
+
+There is also a sanitization macro, `LRM_SANITIZE`, which validates values coming from the user's client so they can't be spoofed.
+
+Syntax: `LRM_SANITIZE(<any>, <regex string literal>)`
+
+It also takes 2 arguments. The first one can be anything: a variable, a function call, etc. The second argument must be a regex string **without** the `/` symbols at the start and end, and **without** anchors (`^` / `$`).
+
+For example: `LRM_SANITIZE(plrname, "[a-zA-Z0-9_]{3, 40}")`
+
+### Example usage
+
+```lua
+if bounty > 45000 then
+    -- Send high bounty player to webhook.
+    LRM_SEND_WEBHOOK( "https://discord.com/api/webhooks/......", {
+        username = "Cat Delivery",
+        embeds = {
+            {
+              title = "High bounty user detected!",
+              description = "Bounty: " .. LRM_SANITIZE(bounty, "[0-9]{1,6}"),
+              color = 16711680, -- red
+
+              fields = {
+                  {
+                      name = "Player Name:",
+                      value = LRM_SANITIZE(plrName, "[a-zA-Z0-9_]{3,40}"),
+                      inline = true
+                  },
+                  {
+                      name = "Caught by:",
+                      value = "<@%DISCORD_ID%>", -- Server-side variable, see below
+                      inline = true
+                  }
+              }
+            }
+        }
+    });
+
+    print("Webhook sent!")
+end
+```
+
+This code safely sends the name and bounty of a high-bounty player to your webhook, with server-side regex sanitization and server-side template rendering.
+
+The client only provides the `bounty` and `plrName` variables. Everything else happens on the server, and the client never sees it.
+
+<Info>
+    Webhook messages are not guaranteed to be delivered: the webhook or the user could get rate-limited, or the user might use a script to block these requests.
+</Info>
+
+<Warning>
+    Always wrap user-supplied values in `LRM_SANITIZE` inside a webhook template. Otherwise, the user can change those values and the server will not validate them.
+
+    **What to avoid:**
+
+    ```lua
+    LRM_SEND_WEBHOOK("https....", {
+        content = "Rank is " .. userRank -- userRank is not validated.
+    });
+    ```
+
+    This is technically valid, and Luarmor supports it. However, it is discouraged because the user can change the value with enough effort, and the server will not validate it.
+
+    **Instead, use this:**
+
+    ```lua
+    LRM_SEND_WEBHOOK("https....", {
+        content = "Rank is " .. LRM_SANITIZE(userRank, "(Gold|Silver|Dog)")
+    });
+    ```
+</Warning>
+
+### Writing regex filters
+
+<Tip>
+    Need help with regex filters? Use [regex101.com](https://regex101.com/) to test them, or ask ChatGPT with this prompt:
+
+    ```text
+    I am using a Lua function macro that takes 2 arguments, 1 variable and 2 regex.
+    Regex must be a JS regex, without the / at the start & end, and without the anchors (^ and $).
+    The service I'm using already adds those for me. Assume the flag is only 's'.
+    Here is an example: LRM_SANITIZE(varExpr, "[a-zA-Z0-9_]{2,30}")
+    Follow this syntax, and give me a regex based on my requirements which I will tell you now.
+    ```
+</Tip>
+
+<Frame caption="Example ChatGPT conversation generating regex filters for LRM_SANITIZE">
+    ![ChatGPT replying with regex patterns for a username and for a number between 0 and 500](/images/webhook-protection-chatgpt-regex-example.png)
+</Frame>
+
+The regex filters ChatGPT returned in this example:
+
+| Requirement | Regex |
+| --- | --- |
+| A username | `[a-zA-Z0-9_]{3,20}` |
+| A number between 0 and 500 | `(0\|[1-9][0-9]{0,1}\|[1-4][0-9]{2}\|500)` |
+
+## Server-side variables
+
+You can also use certain server-side variables, wrapped in `%` signs in your template strings. They are replaced on the server, and **cannot be** spoofed or changed by the user. Their client-side equivalents are [runtime variables](/scripting/runtime-vars), which can be spoofed.
+
+The available variables are:
+
+| Variable         | What is it?                                                    | Example value               |
+| ---------------- | -------------------------------------------------------------- | --------------------------- |
+| `%DISCORD_ID%`   | Discord ID of the user sending the webhook request.            | 11024175100150935723        |
+| `%COUNTRY_CODE%` | Two-letter country code of the user's IP at the time of execution. | gb                          |
+| `%USER_KEY%`     | The user's `script_key`.                                       | SjZvGboZMJt .... (32 chars) |
+| `%CLIENT_IP%`    | The user's IPv4 or IPv6 address at the time of execution.      | 48.72.104.256               |
+| `%USER_NOTE%`    | The key's note, if it has one.                                 | Not Specified               |
+
+Use them inside the constant strings of the template, for example:
+
+```lua
+LRM_SEND_WEBHOOK("https....", {
+    content = "User ran!\nDetails: \nIP: `%CLIENT_IP%` :flag_%COUNTRY_CODE%:"
+});
+```
+
+<Warning>
+    While there is no strict rule about IP logging, **you must inform your users** if you are logging any sensitive information, including IP.
+</Warning>
+
+For ready-to-paste examples, see [Examples](#examples) below.
+
+## Restrictions
+
+- **Key required:** executions must use a `script_key`. FFA scripts without a `script_key` will not have their webhooks sent.
+- **Rate limit:** 30 requests per minute per IP. Only send webhooks when needed.
+- **Embed and webhook limits:** max 3 embeds per message, and max 6 protected webhooks in 1 script. If you reuse the same template, wrap it in a function instead of repeating it.
+- **Payload size:** the JSON-serialised payload must not exceed 7000 characters.
+
+## Examples
+
+Ready-to-paste snippets for common use cases. Replace the webhook URL with your own.
+
+### Game joiner
+
+````lua
+local function sendJoinScript()
+    LRM_SEND_WEBHOOK(
+        "https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN",
+        {
+            username = "Cat Joiner",
+            embeds = {
+                {
+                    title = "Join Script",
+                    description = "Sent by discord user: <@%DISCORD_ID%>",
+                    color = 0x00FF00,
+                    fields = {
+                        {
+                            name = "Job ID:",
+                            value = "```" .. LRM_SANITIZE(game.JobId, "[a-fA-F0-9\\-]{36}") .. "```",
+                            inline = false
+                        },
+                        {
+                            name = "Join script:",
+                            value = "```lua\ngame:GetService('TeleportService'):TeleportToPlaceInstance(" ..
+                                LRM_SANITIZE(game.PlaceId, "[0-9]{4,22}") ..
+                                    ", '" ..
+                                        LRM_SANITIZE(game.JobId, "[a-fA-F0-9\\-]{36}") ..
+                                            "', game:GetService('Players').LocalPlayer)```",
+                            inline = false
+                        }
+                    }
+                }
+            }
+        }
+    )
+end
+````
+
+<Frame caption="Game joiner webhook notification">
+    ![A Discord webhook message titled "Join Script" showing the Job ID and a TeleportToPlaceInstance join script](/images/webhook-samples-game-joiner.png)
+</Frame>
+
+### Detailed execution logs
+
+```lua
+local function sendDetailedExecutionLog()
+    LRM_SEND_WEBHOOK(
+        "https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN",
+        {
+            username = "Catkeeper",
+            embeds = {
+                {
+                    title = "User executed!",
+                    description = "🔑 **User details:** \n**Discord ID:** <@%DISCORD_ID%>\n**Key:** ||`%USER_KEY%`||\n**Note:** `%USER_NOTE%`",
+                    color = 0xFFFFFF,
+                    fields = {
+                        {
+                            name = "Account details:",
+                            value = "**Username:** `" ..
+                                LRM_SANITIZE(game:GetService("Players").LocalPlayer.Name, "[a-zA-Z0-9_]{2,60}") ..
+                                    "`\n**User ID:** `" ..
+                                        LRM_SANITIZE(game:GetService("Players").LocalPlayer.UserId, "[0-9]{2,35}") ..
+                                            "`",
+                            inline = false
+                        },
+                        {
+                            name = "IP:",
+                            value = "%CLIENT_IP% :flag_%COUNTRY_CODE%:",
+                            inline = true
+                        }
+                    }
+                }
+            }
+        }
+    )
+end
+```
+
+<Frame caption="Detailed execution log notification. You should inform your users if you are logging such information.">
+    ![A Discord webhook message titled "User executed!" showing the Discord ID, hidden key, note, Roblox username, user ID and IP with country flag](/images/webhook-samples-execution-log.png)
+</Frame>
+
+### Unique item alert
+
+```lua
+local function sendUniqueItemAlert(catType, catAmount)
+    LRM_SEND_WEBHOOK(
+        "https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN",
+        {
+            username = "Cat Detected",
+            embeds = {
+                {
+                    title = "Rare cat found!",
+                    description = "💎 Found by: <@%DISCORD_ID%>",
+                    color = 0xFF00FF,
+                    thumbnail = {
+                        url = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftr.rbxcdn.com%2F30DAY-DynamicHeadCostume-BC61C024C184A6545E79DC2737B83AB8-Png%2F420%2F420%2FDynamicHeadCostume%2FPng%2FnoFilter&f=1&nofb=1&ipt=2d150e25fd93aade56a30c3b6eda21a373bd8a7053a606b2dc39b283d23d62f6"
+                    },
+                    fields = {
+                        {
+                            name = "Cat details:",
+                            value = "**Type:** " .. LRM_SANITIZE(catType, "(Super Rare|Rare|Common) Cat"),
+                            inline = true
+                        },
+                        {
+                            name = "Quantity:",
+                            value = LRM_SANITIZE(catAmount, "[0-9]{1,7}") .. "x",
+                            inline = true
+                        }
+                    }
+                }
+            }
+        }
+    )
+end
+```
+
+<Frame caption="Unique item alert notification">
+    ![A Discord webhook message titled "Rare cat found!" showing the finder, cat type and quantity with a thumbnail](/images/webhook-samples-unique-item-alert.png)
+</Frame>
+
+### Script error logger
+
+````lua
+local function errorLogger(errorMsg)
+    -- relay script errors to webhook
+    LRM_SEND_WEBHOOK(
+        "https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN",
+        {
+            username = "Cat Error",
+            content = "<@1239352966750797907> Urgent check required.",
+            embeds = {
+                {
+                    title = "Script Error",
+                    description = "⚠️ An error occurred in the Catkeeper script.\nScript belongs to: <@%DISCORD_ID%>\n**Key:** ||%USER_KEY%||\n**Note:** %USER_NOTE%",
+                    color = 0xFF0000,
+                    fields = {
+                        {
+                            name = "Error Message:",
+                            value = "```" .. errorMsg .. "```",
+                            inline = false
+                        }
+                    }
+                }
+            }
+        }
+    )
+end
+````
+
+<Frame caption="Script error logger notification">
+    ![A Discord webhook message titled "Script Error" pinging a user and showing the script owner, hidden key, note and error message](/images/webhook-samples-error-logger.png)
+</Frame>
+
+<Tip>
+    To catch errors, wrap your code in `xpcall` with the logger as the error handler:
+
+    ```lua
+    local function errorLogger(errorMsg)
+       -- LRM_SEND_WEBHOOK(......)
+    end
+
+    xpcall(function()
+       -- your entire code here.
+       -- you must do this for all spawn()'ed threads as well.
+
+    end, errorLogger)
+    ```
+</Tip>

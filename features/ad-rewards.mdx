@@ -1,0 +1,257 @@
+---
+title: "Ad Rewards"
+description: "Monetise your script with ad-link checkpoints that reward users with keys"
+---
+
+Luarmor has a reward system that lets you earn money from your script without charging users directly. It works through link shortener services such as Linkvertise, Lootlabs and Work.Ink.
+
+Users complete a series of checkpoints to earn a reward: either a new key for your script, or extra time on a key they already got through ad rewards.
+
+<Info>
+    Luarmor actively detects and blacklists users who bypass ad links. See the [Anti-Bypass Policy](/features/anti-bypass-policy) for details.
+</Info>
+
+Getting an error while getting a key? See [troubleshooting for script users](/troubleshooting/script-users#getting-a-key-ad-rewards). Setting up ad rewards for your script? See [For script owners](#for-script-owners).
+
+## For visitors
+
+When you click on an `ads.luarmor.net/get_key` link, Luarmor creates a session for your browser. The server stores your progress, your keys, the time left on them and other session data.
+
+<Warning>
+    We recommend **not using a VPN** during your session. Many people can share the same VPN IP at once, which can make integrity checks fail during verification.
+</Warning>
+
+The session is also bound to your IP address, so if you open the same `ads.luarmor.net` link on another device on your network, such as your phone, it will most likely show where you left off. This stops people from easily getting around the cooldown set by the script owner and generating too many keys.
+
+<Info>
+    A session is only deleted in 3 situations:
+
+    - 7-10 days of inactivity, for example if no checkpoint is completed in that time
+    - The link owner edits the target project or wipes sessions on their dashboard
+    - You click the "Forget Browser" button in the bottom-left corner of the screen
+
+    Keep in mind that the "Forget Browser" option is only available if the link owner has enabled it.
+</Info>
+
+This is what an **incomplete** session looks like:
+
+![Incomplete reward session with the Next button highlighted and the disabled Get a New Key button](/images/ad-rewards-session-incomplete.png)
+
+The **Start** / **Next** button opens the link for your next checkpoint. **Get A New Key** stays disabled until you have completed all checkpoints.
+
+Once you complete a checkpoint, you are redirected to this screen:
+
+![Checkpoint completion screen showing 1/2 completed](/images/ad-rewards-checkpoint-completed.png)
+
+If you accidentally close all tabs, **don't worry.** Open the same URL again and your progress will still be there.
+
+<Warning>
+    You have around **70 minutes** to complete a checkpoint. If you don't complete it in time, your progress **will reset** to 0/2 and you will have to start again from the first checkpoint.
+
+    Each time you complete a checkpoint, you get **another 70 minutes** for the next one, so there is no need to rush.
+</Warning>
+
+This is what a **completed** session looks like:
+
+![A completed reward session with the progress bar at 2/2, the Done button, two keys (one expired, one active), and the Renew, +6H and Get A New Key buttons](/images/ad-rewards-session-completed.png)
+
+| Element | What it means |
+|---------|---------------|
+| **Progress** | How many checkpoints you have completed. `2/2` means completed and `0/2` means not started. The total depends on how many checkpoints the link has. |
+| **Done** button (green outline) | You have completed all checkpoints, so you can now use the buttons below. |
+| **Your keys** (`2/3`) | How many keys you have, out of the maximum you can have at once. The link owner sets the maximum. |
+| **Renew** | Reactivates an expired key. The key itself does not change, even if it was deleted. |
+| **+6H** | Adds time to an existing key and also resets the key's HWID. The label shows the duration set by the link owner, and the owner may disable this option. |
+| **Get A New Key** | Creates a new key. If it looks disabled, you have hit your key limit or have not completed the checkpoints yet. |
+
+After completing all checkpoints, you may also see a cooldown timer:
+
+![Cooldown timer shown in place of the Next button, next to the link owner's Cooldown setting](/images/ad-rewards-cooldown.png)
+
+The timer replaces the **Next** button until you can go through the checkpoints again. The link owner sets the cooldown length in hours in the **Cooldown** field (for example, `0.05` = 3 minutes, `1` = 1 hour).
+
+The cooldown helps link providers (e.g. Linkvertise, Lootlabs) count impressions as authentic, which pays more, rather than as spam, which is most likely not monetised.
+
+## For script owners
+
+This is the Reward Manager dashboard. Your limits are shown in the top-left and top-right corners of the screen.
+
+<Frame caption="Shown at 2560x1440 resolution. The dashboard is also usable on mobile.">
+    ![Reward Manager dashboard with registered visitors, checkpoints graph, start link and checkpoint list annotated](/images/ad-rewards-dashboard.png)
+</Frame>
+
+| Element | What it means |
+|---------|---------------|
+| **Registered Visitors** | Every active browser session counts as a registered visitor. Sessions are deleted after 7-10 days of inactivity. To wipe all sessions early, click **Switch** next to the project name and change the target project. |
+| **Total Checkpoints** | How many checkpoints you have created, out of your limit. |
+| **Checkpoints Graph** | Completed and cancelled checkpoints per day. A cancellation means a visitor quit while viewing ads or did not finish all checkpoints in time; each unfinished checkpoint in a session counts as one cancellation. The graph updates every 10-15 minutes, so progress is not reflected instantly. |
+| **Start link** (`https://ads.luarmor.net/get_key?for=...`) | The start link of the key page, shown under the reward name. Give this link to your users. |
+| **Completed / Cancelled** | Stats for each checkpoint, which give you an idea of the user experience. More red means a worse experience. |
+| **Move** | Re-orders the checkpoints. Visitors go through them from top to bottom. |
+| Last row (green check) | The project that new keys are generated in. |
+
+### Creating checkpoints
+
+Each provider below has its own setup guide. The guides are **only valid if you are using the "Anti Bypass / Dynamic URL" options**; without them, there is no point in creating a checkpoint.
+
+#### Linkvertise
+
+Linkvertise is one of the higher-CPM providers, and most users are already familiar with it. If you don't have an account, sign up on the [Linkvertise publisher site](https://publisher.linkvertise.com/).
+
+<Steps>
+    <Step title="Create a Linkvertise link">
+        Create a link on the [Linkvertise dashboard](https://publisher.linkvertise.com/dashboard#link-create). The **Target URL** can be anything. You will change this after creating the checkpoint.
+
+        ![Linkvertise Create Link page with a placeholder target URL](/images/ad-rewards-linkvertise-create-link.png)
+
+        Fill in the other required fields with any text that meets the minimum length requirements. Once the link is created, Linkvertise gives you a short URL like this:
+
+        ![Linkvertise share link step showing the generated link-target.net URL](/images/ad-rewards-linkvertise-short-url.png)
+
+        You can also find your links on the Linkvertise dashboard. Copy this `https://link-target.net/xxxxx` URL and paste it into the **Short URL** field of the Luarmor checkpoint creation form.
+
+        ![Short URL field in the Luarmor checkpoint creation form with a Linkvertise URL](/images/ad-rewards-linkvertise-paste-short-url.png)
+
+        <Warning>
+            Don't create the checkpoint yet. There's another step to complete.
+        </Warning>
+    </Step>
+    <Step title="Enable Anti Bypassing">
+        Go to the [Linkvertise account settings](https://publisher.linkvertise.com/dashboard#account). Under **Anti-Bypassing**, tick **Use anti-bypassing**. Linkvertise then generates a token in the **Anti-Bypassing Token** field.
+
+        ![Linkvertise Anti-Bypassing settings with the generated token and Save Settings button](/images/ad-rewards-linkvertise-anti-bypass-token.png)
+
+        Copy this token and click **Save Settings**. Then, on the Luarmor checkpoint form, open **Linkvertise Settings**, turn on **Anti-Bypass** and paste the token into the field next to it:
+
+        ![Luarmor Create Checkpoint form with Linkvertise Anti-Bypass enabled and the token pasted](/images/ad-rewards-linkvertise-checkpoint-settings.png)
+
+        - **Checkpoint Name**: anything you like. Visitors will not see it.
+        - **Short URL**: the `https://link-target.net/...` URL from the previous step.
+
+        Click the green check icon to create the checkpoint. The page will reload.
+    </Step>
+    <Step title="Set the callback URL as the link target">
+        Now that the checkpoint exists, copy its callback URL and set it as the Linkvertise link's target. Click the **Edit** button next to the checkpoint name:
+
+        ![Edit and Delete buttons next to a checkpoint in the Reward Manager](/images/ad-rewards-checkpoint-edit-button.png)
+
+        Then copy the callback URL (`https://ads.luarmor.net/v/cb/...`) shown under **Linkvertise Settings** at the bottom of the screen. This is the URL Luarmor uses to verify the completion of the checkpoint.
+
+        ![Checkpoint callback URL shown under Linkvertise Settings](/images/ad-rewards-linkvertise-callback-url.png)
+
+        Edit the Linkvertise link you created earlier and paste the callback URL into the **Set your Target-URL** field.
+
+        ![Edit button for a link on the Linkvertise dashboard](/images/ad-rewards-linkvertise-edit-link.png)
+
+        ![Linkvertise Target-URL field set to the Luarmor callback URL](/images/ad-rewards-linkvertise-target-url.png)
+
+        Then go through the remaining Linkvertise steps and save your changes. Your checkpoint is now ready. Give the start link (`https://ads.luarmor.net/get_key?for=...`, shown under the reward name) to your users and you will start getting clicks right away:
+
+        ![Reward start link (ads.luarmor.net/get_key) shown under the reward name](/images/ad-rewards-start-link.png)
+    </Step>
+</Steps>
+
+#### Lootlabs
+
+Lootlabs is a provider similar to Linkvertise, but it pays slightly more. It also offers many cashout options, including cryptocurrencies.
+
+<Steps>
+    <Step title="Create a Lootlabs link">
+        Create a link on the [Lootlabs dashboard](https://creators.lootlabs.gg/dashboard):
+
+        ![Create Single Monetized Links button on the Lootlabs dashboard](/images/ad-rewards-lootlabs-create-link.png)
+
+        ![Lootlabs Create new Single Link form with any destination URL](/images/ad-rewards-lootlabs-destination-url.png)
+
+        The destination URL can be anything. Luarmor adjusts the target parameter automatically, as long as you use the Anti-Bypass option.
+
+        Once you have created the link, copy the URL (`https://loot-link.com/s?...`) from the **Short Link** column under **My Links**:
+
+        ![Lootlabs My Links table with the short link highlighted](/images/ad-rewards-lootlabs-copy-short-link.png)
+
+        Paste it into the **Short URL** field of the Luarmor checkpoint creation form.
+
+        ![Short URL field in the Luarmor checkpoint creation form with a Lootlabs URL](/images/ad-rewards-lootlabs-paste-short-url.png)
+    </Step>
+    <Step title="Add your Lootlabs API key">
+        Go to your [Lootlabs profile page](https://creators.lootlabs.gg/profile) and open the **API Key** tab at the bottom of the sidebar. Your API key is shown there, with a copy button next to it.
+
+        ![Lootlabs profile page API Key section](/images/ad-rewards-lootlabs-api-key.png)
+
+        Copy the key. On the Luarmor checkpoint form, open **Lootlabs Settings**, turn on **Anti-Bypass** and paste the key into the API key field next to it.
+
+        ![Luarmor Create Checkpoint form with Lootlabs Anti-Bypass enabled and the API key pasted](/images/ad-rewards-lootlabs-checkpoint-settings.png)
+
+        Create the checkpoint.
+
+        <Check>
+            You don't need to edit the target URL on the Lootlabs dashboard. Luarmor adjusts the redirection automatically.
+        </Check>
+    </Step>
+    <Step title="Enable Advanced Anti-Bypass">
+        Finally, connect the checkpoint to the [Lootlabs Advanced page](https://creators.lootlabs.gg/advanced) with a postback URL:
+
+        1. In the Luarmor checkpoint, turn on **Advanced Anti-Bypass**. The postback URL (`https://ads.luarmor.net/v/llabp/pb/...`) appears next to the toggle.
+        2. Paste it into the **Postback** field on the Lootlabs **Advanced** page.
+        3. Click **Save**.
+
+        <Warning>
+            Do not share your postback URL.
+        </Warning>
+
+        ![Enabling Advanced Anti-Bypass in Luarmor and pasting the postback URL into the Lootlabs Advanced page, then clicking Save](/images/ad-rewards-lootlabs-postback.png)
+
+        This step is very important, so make sure the postback URL is saved on the Lootlabs dashboard. Before you can save it, you may need to click the `{CLICK_ID}`, `{IP}` and `{UNIQUE_ID}` buttons below the field (`{CLICK_ID}` is required).
+    </Step>
+</Steps>
+
+#### Work.Ink
+
+<Steps>
+    <Step title="Generate an API key">
+        Create an API key on the [Work.Ink dashboard](https://dashboard.work.ink/developer) under **Developer Tools** > **Generate API Key**.
+
+        ![Work.Ink Developer Tools page with the API Keys section and Generate API Key button](/images/ad-rewards-workink-api-key.png)
+
+        Paste this key into the **API Token** field in the bottom-right corner of the Luarmor checkpoint creation page.
+    </Step>
+    <Step title="Create a Work.Ink link">
+        Next, create a Work.Ink link. The destination can be anything, for example:
+
+        <Frame caption="Create a link with any destination URL">
+            ![Work.Ink Create Link form with a placeholder destination link](/images/ad-rewards-workink-create-link.png)
+        </Frame>
+
+        <Frame caption="Click Copy link after generating it">
+            ![Copy link button on a Work.Ink link](/images/ad-rewards-workink-copy-link.png)
+        </Frame>
+
+        ![Luarmor checkpoint form with the Work.Ink URL pasted, API token entered and both anti-bypass toggles enabled](/images/ad-rewards-workink-checkpoint-settings.png)
+
+        - **Work.Ink Settings**: enable both **Anti-Bypass** and **Advanced Anti-Bypass**.
+        - **API token** field: paste the API key from the first step.
+
+        That's all you need.
+
+        <Check>
+            Leave the Short URL field empty. Create the checkpoint and everything will be handled automatically.
+        </Check>
+    </Step>
+</Steps>
+
+#### ShrtFly / ShrinkEarn
+
+ShrtFly and ShrinkEarn work the same way as Work.Ink. To add either provider, repeat the Work.Ink steps above with that provider's API token.
+
+- Get the ShrtFly API token from the [ShrtFly developer API page](https://www.shrtfly.com/publisher/developer-api).
+- Get the ShrinkEarn API token from the [ShrinkEarn API tools page](https://shrinkearn.com/member/tools/api).
+
+More providers might be added in the future. If you want to suggest one, create a ticket in our Discord server.
+
+### Related
+
+- [Key Check Library](/scripting/key-check-library): keys generated through ad rewards have the note "Ad Reward".
+- [Key system GUIs](/troubleshooting/script-owners#key-systems)
+- [Remove role for ad rewards (free users)](/troubleshooting/script-owners#discord-bot)
+- [External Key Check API](/api-reference/external-key-check)
+- [Anti-Bypass Policy](/features/anti-bypass-policy)

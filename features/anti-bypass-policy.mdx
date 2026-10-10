@@ -1,0 +1,124 @@
+---
+title: "Anti-Bypass Policy"
+description: "How Luarmor detects bypassed ad-link completions and how it handles them"
+---
+
+This page explains how Luarmor detects bypassed completions and how it handles them. For setting up the ad system itself, see [Ad Rewards](/features/ad-rewards).
+
+Luarmor uses active and passive detections against bypassed redirections and puts the bypassing user on a cooldown. However, most of the time **we are limited to the APIs** provided by the advertiser platforms (such as the Linkvertise hash or the Work.Ink token callback) and some browser headers.
+
+## For script users / visitors
+
+This section explains Luarmor's ad system and its anti-bypass measures.
+
+Script owners on Luarmor can earn money through ad-link services like Linkvertise and Lootlabs. If somebody bypasses these links, **it does not count as a valid click** and the script owner **misses out on that potential revenue.**
+
+To combat this, Luarmor runs extensive checks against bypass services, userscripts and bots. When a session is blacklisted, we don't want the user to get around the blacklist by switching browsers, so we ask them to connect their Discord account to Luarmor. This lets us check that they are not the person who was blacklisted. (Creating and verifying an alt Discord account takes more time than simply opening an incognito tab.)
+
+Regular users who don't bypass links **usually don't have to connect their Discord at all**. You only need to do it when **something looks off with your browser**: plugins, VPN, antibot scores, etc. All of these factors feed into a "risk score" that decides whether you need to connect your Discord.
+
+Already blacklisted? See [Blacklisted (Ad Rewards)](/troubleshooting/script-users#blacklisted-ad-rewards) for what to do.
+
+### Is it safe to connect Discord?
+
+Yes. The Luarmor OAuth2 integration does not require any privileged scope, and Luarmor only uses your Discord ID. See Discord's [OAuth2 documentation](https://discord.com/developers/docs/topics/oauth2) for how scopes work.
+
+These are the scopes Luarmor requests:
+
+![Discord OAuth2 authorisation screen for the Luarmor Ad-Reward System requesting only username, avatar and banner access](/images/anti-bypass-policy-discord-oauth-scopes.png)
+
+The only permission listed is **Access your username, avatar, and banner**. Discord also states that the application **cannot read your messages or send messages as you**, and that you will be redirected to `https://ads.luarmor.net` after authorising.
+
+This means Luarmor can only see your Discord ID and data linked to it (like your username and avatar), and it only uses the Discord ID. **It cannot see your servers (guilds) or your messages.**
+
+The access is read-only, so Luarmor cannot change anything on your profile. The Discord API does not have any vulnerability in its OAuth2 implementation, so it is safe to link.
+
+This is the most minimal form of OAuth2. Other Discord apps, such as Vaultcord and Restorecord, usually ask for much more access, including your email and the servers you're in.
+
+<Tip>
+    If you prefer extra caution, feel free to link an alt account.
+</Tip>
+
+### Activity in bypass communities?
+
+Luarmor **does not** blacklist you just for being in a bypass-related community; that would be unfair and prone to a lot of false positives.
+
+We run "self bots" in certain ad-link bypass communities and check the messages posted by bypass developers to keep up with their methods. This is entirely automated, because manual review would be time-consuming and impractical.
+
+Here is an example of a flagged message sent in a public channel with 40K members:
+
+![Flagged Discord message in a public bypass channel sharing a method to bypass Luarmor](/images/anti-bypass-policy-flagged-message.png)
+
+The bot only scans public channels for shared technical methods. People don't reasonably expect privacy there, because it is a **public chat room**. In this example, the bot let us detect the method before anyone had the chance to use it.
+
+If you are part of a community like this, you **don't need to worry**. Anyone can use Discord's **Search** box to look up messages sent by anyone; we just automate this with certain keywords and users.
+
+We are only interested in activity directly related to developing or distributing bypass methods, not ordinary participation.
+
+### Browser cookies, IP address etc.?
+
+Luarmor tells you exactly what it collects when you visit a Luarmor link for the first time:
+
+![Luarmor Privacy Policy for Visitors dialog shown on the first visit, with an I accept button](/images/anti-bypass-policy-privacy-policy.png)
+
+In short, the policy says:
+
+- Once you create a reward session, Luarmor collects your browser's IP address and stores a randomly generated unique identifier in your browser's localStorage, so it can remember your session, keys and checkpoint progress.
+- Any device that shares the same public IP gets the same identifier and sees the same progress.
+- None of this information is visible to the script owner, and it is only used within the Luarmor API, not shared with third parties.
+- Your IP and identifier are deleted automatically after 7-10 days of inactivity on the session. Where the script owner has enabled it, the "Forget Browser" option also deletes them.
+- You can refuse the policy, but continued use of the site counts as acceptance.
+
+Luarmor is a website running in your browser, so **it cannot access anything** personal other than your IP address and the data available to the browser's JavaScript API. It cannot track your activity on other sites, or anything about you after you close the tab. That is simply how browsers work.
+
+Most browsers utilise anti-fingerprinting methods that make it nearly impossible to track you in an incognito tab with a VPN. If you want privacy, use an incognito tab, which is cleared completely when you close it. If you don't bypass links, you don't need to worry about any of this. After 7-10 days of inactivity, Luarmor does not retain any data about you or your session unless you are blacklisted for bypassing.
+
+## For script owners
+
+### What does this mean for you?
+
+If you are using the ad system, some of your users may see a "Connect Discord" prompt. It detects blacklisted Discord IDs and forces bypassers to find another aged Discord account.
+
+### When does this "Connect Discord" prompt pop up?
+
+- When the visitor uses an IP address associated with abuse (e.g. Mullvad, M247 EU, Datacamp, some datacenter ASNs).
+- When the visitor triggers certain soft detections.
+
+<Info>
+    **Statistics:**
+
+    - Bypassed completions are less than 2% of the overall Luarmor ad traffic in most cases, and they do not have a noticeable impact on your revenue. These mitigations also result in more authentic conversions, which means a higher CPM.
+    - VPN users only have to link their Discord account once and are never prompted again. The process is quick, and only a very small percentage of visitors are prompted to connect Discord.
+    - Not every userscript is detected; some of them can't be detected due to their nature. We are currently working with the Lootlabs and Linkvertise teams to get access to APIs that will let us see more than just the callback headers.
+    - In some cases, Luarmor does not blacklist a user right away and lets them complete the links a few more times first, to rule out false detections.
+</Info>
+
+Know of a bypass method? Share it in our Discord server and we will reverse engineer it to see what can be done.
+
+## Effectiveness
+
+On the 20th of August, we went beyond what the advertiser platforms provide and began detecting certain "userscripts" that even those platforms fail to detect, although the userscripts run on the platforms' own pages.
+
+<Check>
+    Luarmor now detects some of these "premium" userscripts with high accuracy and blacklists the user. Between 23/08 and 31/08, more than 2500 sessions were blacklisted and more than 1700 Discord IDs were flagged for bypassing the ad steps.
+</Check>
+
+These screenshots from bypass communities show the effect of the new mitigations:
+
+![Discord messages from bypass communities showing users hitting the Temporarily Blacklisted screen](/images/anti-bypass-policy-community-reactions-1.png)
+
+![Discord messages from users reporting they keep getting blacklisted while using bypass userscripts](/images/anti-bypass-policy-community-reactions-2.png)
+
+![Discord messages reporting that the bypass.vip userscript is now detected](/images/anti-bypass-policy-community-reactions-3.png)
+
+![Discord messages from users blacklisted for days after using bypass userscripts](/images/anti-bypass-policy-community-reactions-4.png)
+
+![Screenshots of the Luarmor Blacklisted screen shared by users in bypass communities](/images/anti-bypass-policy-community-reactions-5.png)
+
+## Conclusion
+
+These methods have proven effective at detecting bypasses. We observed a ~70% decrease in bypass attempts, because no one wants to get around a blacklist with a fresh Discord account every time.
+
+This does not affect regular visitors; only a small percentage of them are prompted to connect Discord.
+
+For questions, join [discord.gg/luarmor](https://discord.gg/luarmor) and create a ticket.
