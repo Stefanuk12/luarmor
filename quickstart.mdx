@@ -5,158 +5,211 @@ description: 'Get your script ready in under 10 minutes'
 
 ## Creating your account
 
-Luarmor works with an `invite code` system. This means that you can only create an account if you have an invite code. You can also buy invite codes for other people to use!
+<Warning>
+    Please do not make a new account if you already have one. If you have lost your API key, search your emails for "Luarmor" to find it. If you still can't find it, see [I didn't receive/lost my API key](/troubleshooting/script-owners#account-management).
+</Warning>
+
+Luarmor uses an invite code system, so you need an invite code to create an account. You can also buy invite codes for other people.
 
 <AccordionGroup>
-  <Accordion title="Getting an invite code">
-    Invite codes can be purchased from the main site [here](https://luarmor.net/#prices).
-  </Accordion>
-  <Accordion title="Extending your membership">
-    Invite codes can also be used to extend your membership by an extra 30 days by redeeming an invite code on your [profile page](https://luarmor.net/profile).
-  </Accordion>
-  <Accordion title="Creating an account">
-    <Steps>
-      <Step title="Go to the site">
+    <Accordion title="Getting an invite code">
+        Invite codes can be purchased from the [pricing section of the main site](https://luarmor.net/#prices), or through our [Discord server](https://discord.gg/luarmor).
+    </Accordion>
+    <Accordion title="Extending your membership">
+        You can also extend your membership by 30 days by redeeming an invite code on your [profile page](https://luarmor.net/profile).
+
+        <Note>
+            If your membership expired less than 7 days ago, the 30 days are added to your old expiry date, not to today. For example, redeeming 3 days after expiring gives you 27 days.
+        </Note>
+    </Accordion>
+</AccordionGroup>
+
+For questions about pricing, lifetime plans or paying with crypto, see [Purchasing](/troubleshooting/script-owners#purchasing).
+
+<Steps>
+    <Step title="Go to the site">
         Go to the [registration page](https://luarmor.net/signup).
-      </Step>
-      <Step title="Enter your invite code">
-        Enter your invite code in the `Invite Code` field.
-      </Step>
-      <Step title="Fill in the form">
-        Fill in the rest of the form and click `Register`.
+    </Step>
+    <Step title="Enter your invite code">
+        Enter your invite code in the **Invite Code** field.
+    </Step>
+    <Step title="Fill in the form">
+        Fill in the rest of the form and click **Register**.
 
         <Frame caption="Successful registration">
-          <img src="/images/create-step-1.png" alt="The screen you see after successfully registering"/>
+            <img src="/images/create-step-1.png" alt="The Luarmor registration form with email, Discord ID and invite code filled in, showing a successful registration message" />
         </Frame>
-      </Step>
-      <Step title="Receive your login credential">
-        You will receive your login credential (`API Key`) in your emails
+    </Step>
+    <Step title="Receive your API key">
+        You will receive your API key by email. You use it to log in.
 
         <Frame caption="API key in email">
-          <img src="/images/create-step-2.png" alt="An email from Luarmor, showing the API key" />
+            <img src="/images/create-step-2.png" alt="An email from Luarmor containing your API key" />
         </Frame>
-      </Step>
-      <Step title="Log in">
-        [Log in](https://luarmor.net/login) to your account and access the dashboard with your API Key.
+    </Step>
+    <Step title="Log in">
+        [Log in](https://luarmor.net/login) with your API key to access the dashboard.
 
-        <Frame caption="Successful log in">
-          <img src="/images/create-step-3.png" alt="The screen you see after successfully logging in" />
+        <Frame caption="Successful login">
+            <img src="/images/create-step-3.png" alt="The Luarmor login form with an API key entered and the Logged In button" />
         </Frame>
-      </Step>
-    </Steps>
-  </Accordion>
-</AccordionGroup>
+    </Step>
+</Steps>
 
 ## Creating a project
 
-Luarmor has a feature called **project folders**. They can contain multiple scripts, allowing you to have a **script hub** with multiple games in it.
+Luarmor has a feature called **project folders**. A project folder can contain multiple scripts, so you can build a **script hub** that supports multiple games. Keys are shared across all scripts in a project folder, so one key can run every script in it.
 
-<AccordionGroup>
-  <Accordion title="Create a project">
-    A project can contain multiple scripts. You can create a project [here](https://luarmor.net/projects) by clicking `Create Project`.
+<Steps>
+    <Step title="Create a project">
+        Go to the [projects page](https://luarmor.net/projects) and click **Create Project**.
 
-    <Frame caption="Luarmor dashboard">
-      <img src="/images/create-step-4.png" alt="An image showing the Luarmor dashboard with the mouse over the `Create Project` button" />
-    </Frame>
-  </Accordion>
-  <Accordion title="Enter project details">
-    Enter all of the details for the project including the name, webhooks, and configuring HWID resets.
+        <Frame caption="Luarmor dashboard">
+            <img src="/images/create-step-4.png" alt="The empty Luarmor projects dashboard with the cursor on the Create Project button" />
+        </Frame>
+    </Step>
+    <Step title="Enter project details">
+        Enter all of the details for the project, including the name, webhooks, and HWID reset settings.
 
-    <Frame caption="Project details all filled in">
-      <img src="/images/create-step-5.png" alt="An image showing all of the project details filled in" />
-    </Frame>
-  </Accordion>
-</AccordionGroup>
+        <Frame caption="Project details all filled in">
+            <img src="/images/create-step-5.png" alt="The Create Project form with the project name, logs webhook, alert webhook, Allow HWID reset and cooldown filled in" />
+        </Frame>
+
+        | Field | What it does |
+        |-------|--------------|
+        | **Project Name** | The name of your project. |
+        | **Logs Webhook** | A Discord webhook that receives a message for each successful execution. |
+        | **Alert Webhook** | A Discord webhook that crack attempts and bans are reported to. |
+        | **Allow HWID reset** | When enabled, users can reset their HWID themselves. |
+        | **Cooldown** | How many days a user must wait between HWID resets. |
+    </Step>
+</Steps>
 
 ## Uploading your script
 
-All scripts live inside a project, to learn how to create one, please refer to the previous section.
+Every script belongs to a project. If you haven't created one yet, see [Creating a project](#creating-a-project).
 
-<AccordionGroup>
-  <Accordion title="Upload your script to the project">
-    To start uploading a script, under the project you created, click `New Script`.
+<Note>
+    Luau syntax is not fully supported, modules can't `return`, and line numbers in error messages won't match your original source after upload. See [Uploading scripts troubleshooting](/troubleshooting/script-owners#uploading-scripts). Luarmor does not store your source code by default; to keep backups, see [Source Locker](/features/source-locker).
+</Note>
 
-    <Frame caption="The button to click that adds a script to the project">
-      <img src="/images/create-step-6.png" alt="The button to click that adds a script to the project" />
-    </Frame>
-  </Accordion>
-  <Accordion title="Enter script details">
-    After you click `New Script`, you will be prompted to enter the script details. Fill in all of the details, **upload your script**, and press the green tick in the top right.
-    
-    <Note>
-      Your screen may be too small and you may not be able to see the `Upload File` button. If this is the case, try to zoom out or use another computer / monitor.
-    </Note>
+<Steps>
+    <Step title="Add a script to the project">
+        Under the project you created, click **Add Script**.
 
-    <Frame caption="Entering all of the script details">
-      <img src="/images/create-step-7.png" alt="An image with all of the script details filled in" />
-    </Frame>
-  </Accordion>
-</AccordionGroup>
+        <Frame caption="The button that adds a script to the project">
+            <img src="/images/create-step-6.png" alt="A new project on the dashboard with the cursor on the Add Script button" />
+        </Frame>
+    </Step>
+    <Step title="Enter script details">
+        Fill in the script details, **upload your script**, and press the green tick in the top right.
+
+        <Note>
+            If you can't see the **Upload File** button, your screen may be too small. Try zooming out or using another computer or monitor.
+        </Note>
+
+        <Frame caption="Entering all of the script details">
+            <img src="/images/create-step-7.png" alt="The new script form with a script name, mode toggles (Free for All, Silent, Heartbeat, Lightning) and an uploaded file" />
+        </Frame>
+
+        | Option | What it does |
+        |--------|--------------|
+        | **Free for All Mode** | Lets anyone run your script without a key. You can turn it off at any time. For a "freemium" script, check [`LRM_IsUserPremium`](/scripting/runtime-vars). |
+        | **Silent Mode** | Disables Luarmor's console output. Not recommended. |
+        | **Heartbeat** | Makes your script more secure. Recommended. If users' executors crash with `attempt to index thread with 'Send'`, see [the Send error FAQ](/troubleshooting/script-users#running-scripts). |
+        | **Lightning Mode** | Removes some inline security checks to make your script run faster, at a small cost to security. |
+        | **Prefer V4 Loader** | A beta setting that encrypts your script in HTTP traffic and in the local cache, and runs a bootstrapper script on execution. Required for [Webhook Protection](/features/webhook-protection). |
+    </Step>
+</Steps>
 
 ## Distributing your script
 
-After you have uploaded your script, you can now download the loader script and start whitelisting users.
+After you have uploaded your script, you can download the loader script and start whitelisting users.
 
-<AccordionGroup>
-  <Accordion title="Download the loader">
-    <Warning>
-      Please use the Luarmor loadstring to ensure your script is always up to date. Uploading the contents of the loadstring and using that instead will cause an error!
-    </Warning>
+### Download the loader
 
-    Download the loader script by clicking the `Loader` button.
+<Warning>
+    Please use the Luarmor loadstring so your script is always up to date. Re-uploading the code that the loadstring downloads and using that instead will cause an error.
+</Warning>
 
-    <Frame caption="Highlighted button that downloads the loader">
-      <img src="/images/create-step-8.png" alt="An image with the red box around the download 'Loader' button"/>
-    </Frame>
-  </Accordion>
-  <Accordion title="Create whitelist keys">
-    Generate an empty key on the [user](https://luarmor.net/users) area and give it to the user. Alternatively, you can mass-generate keys and put them to your [Sellix](https://sellix.io) / [Shoppy](https://shoppy.gg) as `serials` for automated purchases. 
-  
-    <CardGroup>
-      <Frame caption="Mass generate keys">
-        <img src="/images/create-step-9.png" alt="The screen that lets you pass generate keys" />
-      </Frame>
+Download the loader script by clicking the **Loader** button.
 
-      <Frame caption="Upload keys to Sellix">
-        <img src="/images/whitelist-key-sellix.gif" alt="A gif showing uploading keys to Sellix"/>
-      </Frame>
-    </CardGroup>
-  </Accordion>
-</AccordionGroup>
+The loader does not change, so you don't have to re-download it every time you update your script.
+
+<Frame caption="Highlighted button that downloads the loader">
+    <img src="/images/create-step-8.png" alt="The projects dashboard with the Loader button highlighted next to the uploaded script" />
+</Frame>
+
+### Create whitelist keys
+
+Generate a new, unassigned key in the [users area](https://luarmor.net/users) and give it to the user. Keys can also be [time-limited](/api-reference/endpoint/user-management/create-userkey#expiry-dates-and-time-limited-keys). Alternatively, you can mass-generate keys and add them to your [Sellix](https://sellix.io) or [Shoppy](https://shoppy.gg) store as `serials`, so buyers receive a key automatically. To mass-generate keys, open your project's **Manage Users** window, enter the number of keys (up to 300 at once) under **Mass Generate Keys**, press **Generate**, then download the keys with **Download TXT**.
+
+<Frame caption="Mass generate keys">
+    <img src="/images/create-step-9.png" alt="The Manage Users window with 250 entered under Mass Generate Keys and the cursor on Generate" />
+</Frame>
+
+<Frame caption="Upload keys to Sellix">
+    <img src="/images/whitelist-key-sellix.gif" alt="Uploading generated keys to a Sellix product as serial keys" />
+</Frame>
+
+### Whitelist through the Discord bot
+
+Alternatively, whitelist the user with the `/whitelist` command of the [Discord bot](/discord-bot). The user can then click the **Get Script** button on the bot's panel to get the script.
+
+You should receive the bot invite by email when you buy a Luarmor invite code. If you didn't, you can find it on the [Discord bot](/discord-bot) page.
+
+### Running the script
+
+Once a user is whitelisted, they can run the script by adding `script_key = "KEY HERE";` above the loader (this is not needed in Free for All (FFA) mode). If you set a **Logs Webhook** in your project settings, you will get a notification each time they run it.
+
+Keys are **linked to the user's HWID**, so a shared key won't work for anyone else, because their HWID is different.
+
+<Frame caption="`script_key` must be added above the loader">
+    <img src="/images/script-key-on-top.png" alt="A downloaded script with the user's script_key set on the first line, above the Luarmor licence header" />
+</Frame>
+
+### Resetting a user's HWID
+
+Sometimes a user's HWID changes on its own. When that happens, they must reset it with the **Reset HWID** button on your [Discord bot panel](/discord-bot#create-a-panel) and run the script again; their new HWID is assigned automatically on that run. Your managers can also reset any user's HWID with [`/force-hwidreset`](/discord-bot#manager-commands).
+
+Users with the [buyer role](/discord-bot#buyer-role) can reset their own HWIDs if you have enabled [**Allow HWID reset**](#creating-a-project) for the project. If you think someone is sharing their key and resetting its HWID each time someone else uses it, see [how to spot key sharing](/troubleshooting/script-owners#discord-bot).
 
 ## Mass import / export users
 
-<AccordionGroup>
-  <Accordion title="Import">
-    To import all your users, it's recommended to use the JSON format when exporting.
+If you are moving from another whitelist service, or from your own system, you can import your users.
 
-    <Steps>
-      <Step title="Go to your project settings">
-        Go to your project settings by clicking the gear icon next to the project in the [user dashboard](https://luarmor.net/users)
+### Export
+
+You can export all your users as a TXT or JSON file. For screenshots, see [Import](#import) below.
+
+<Steps>
+    <Step title="Go to your project settings">
+        Go to your project settings by clicking the gear icon next to the project in the [user dashboard](https://luarmor.net/users).
+    </Step>
+    <Step title="Download">
+        Press either **Download TXT** or **Export JSON**. If you plan to import the users later, use **Export JSON**.
+    </Step>
+</Steps>
+
+### Import
+
+Importing uses the JSON file from **Export JSON** (see [Export](#export)).
+
+<Steps>
+    <Step title="Go to your project settings">
+        Go to your project settings by clicking the gear icon next to the project in the [user dashboard](https://luarmor.net/users).
 
         <Frame caption="Gear icon highlighted">
-          <img src="/images/project-gear-icon.png" alt="The gear icon highlighted next to the project on the user dashboard" />
+            <img src="/images/project-gear-icon.png" alt="The gear icon highlighted next to a project on the dashboard" />
         </Frame>
-      </Step>
-      <Step title="Import">
-        Press `Import JSON` and paste the JSON file you exported earlier.
+    </Step>
+    <Step title="Import">
+        Press **Import JSON** and select the JSON file you exported.
 
         <Frame caption="Import JSON button">
-          <img src="/images/project-import-users.png" alt="The import JSON button highlighted" />
+            <img src="/images/project-import-users.png" alt="The Manage Users window with an exported users JSON file selected under Import Users and the Confirm button highlighted" />
         </Frame>
-      </Step>
-    </Steps>
-  </Accordion>
-  <Accordion title="Export">
-    You can export all your users to either a TXT file or JSON file. For images, see the import section.
-  
-    <Steps>
-      <Step title="Go to your project settings">
-        Go to your project settings by clicking the gear icon next to the project in the [user dashboard](https://luarmor.net/users)
-      </Step>
-      <Step title="Download">
-        Press either `Download TXT` or `Export JSON`. To import later, it's recommended to use `Export JSON`.
-      </Step>
-    </Steps>
-  </Accordion>
-</AccordionGroup>
+    </Step>
+</Steps>
+
+Once your users are imported, they only need to click the **Get Script** button on the [Discord bot panel](/discord-bot#create-a-panel). The bot replies with the script, with their key added on top.
