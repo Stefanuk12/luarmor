@@ -1,0 +1,94 @@
+---
+title: "Key Check Library"
+description: "Check a user's key from Lua before loading your script, and handle each status yourself"
+---
+
+<Info>
+    In most cases, you don't need to check the key yourself, because Luarmor-protected scripts already have a built-in whitelist that kicks the user if their key is invalid.
+
+    If you want to check a key in advance (before the whitelist runs) so the user isn't kicked for an invalid key, use this key check library.
+</Info>
+
+Ideally, run this library **before** the obfuscated code (the Luarmor loadstring), so you can handle invalid or expired keys yourself, for example by showing the error message to the user instead of kicking them or crashing the client. It works well together with the [`LRM_INIT_SCRIPT`](/scripting/macros) macro. For a ready-made key input GUI, you can use [this template](https://github.com/Luckyware-Softworks/Example-Ad-Reward-Loader). To check keys from outside of Roblox (e.g. your own website or app), see the [external key check API](/api-reference/external-key-check) instead.
+
+Here's how to import and use it:
+
+```lua
+local api = loadstring(game:HttpGet("https://sdkapi-public.luarmor.net/library.lua"))()
+--> Returns a table with methods that you can use.
+-- You must initialize it with the script ID first.
+
+-- Put your own script ID below:
+-- You can find it in your loadstring URL or projects tab.
+api.script_id = "f42f3746fb3eb60f837d3673581c14a6"
+
+-- make the API request:
+local status = api.check_key(script_key or textLabel1.Text) -- pass 32-char user key here
+print(status) --> table {code:<string>, message:<string>, data?:<table>}
+
+-- custom logic below:
+if (status.code == "KEY_VALID") then
+
+    -- fetch basic info about the key (only if KEY_VALID)
+    ui:SetBanner("Welcome. Seconds left: " .. (status.data.auth_expire - os.time()))
+    ui:UpdateTitle("Total executions: ", status.data.total_executions)
+
+    print("Is key from ad system? " .. (status.data.note == "Ad Reward" and "YES" or "NO"))
+
+    script_key = script_key or textLabel1.Text -- SET THE KEY BEFORE LOADSTRINGING.
+
+    api.load_script() -- Executes the script, based on the script_id you put above.
+    -- Alternatively, you can just put the loadstring you got from luarmor website.
+    -- You must specify the script_key global either way.
+    return
+
+elseif (status.code == "KEY_HWID_LOCKED") then
+    ui:Notify("Key linked to a different HWID. Please reset it using our bot")
+    return
+
+elseif (status.code == "KEY_INCORRECT") then
+    ui:Notify("Key is wrong or deleted!")
+    return
+else
+    -- fallback to anything else e.g blacklisted, key empty/too short:
+    player:Kick("Key check failed:" .. status.message .. " Code: " .. status.code)
+end
+```
+
+## Library methods
+
+| Method | Usage | Meaning |
+| --- | --- | --- |
+| `script_id` (new index) | `lib.script_id = "PASTE ID"` | Assign your [script ID](/troubleshooting/script-owners#uploading-scripts) to the table that the library returns. Always do this first, before checking any keys. |
+| `check_key(<string>)` | `lib.check_key("JnX84B...Q1")` | Checks the key with Luarmor and returns a status table (see below). |
+| `load_script()` | `lib.load_script()` | Loads the script whose ID you assigned to `script_id`. You can also use your normal loadstring instead. Either way, you **must** set the `script_key` global first. |
+| `purge_cache()` | `lib.purge_cache()` | Tries to delete the cached file in the workspace folder that holds the last known obfuscated version of the script. |
+
+## Possible status codes
+
+`check_key` always returns a table with a `code` and a `message`.
+
+| `code` | `message` | Meaning |
+| --- | --- | --- |
+| `KEY_VALID` | The provided key is valid. | Key has no HWID assigned to it (reset state) **or** the assigned HWID matches the client's HWID, and the key is not expired. |
+| `KEY_EXPIRED` | The provided key has expired. | Key is valid, HWID matches, but it has expired and cannot be used. |
+| `KEY_BANNED` | The provided key is blacklisted. | Key is valid, HWID matches, but it is blacklisted and cannot be used. The blacklist reason is not exposed to the user via this library. |
+| `KEY_HWID_LOCKED` | The provided key has been locked to a different HWID. Reset your HWID to access it. | Key is valid, but the **HWID does not match** and needs to be [reset](/quickstart#resetting-a-users-hwid) via the bot panel or ad page. |
+| `KEY_INCORRECT` | The provided key is incorrect / it does not exist. | Key is in a valid format, but does not exist in the database. It may have been deleted or never generated. |
+| `KEY_INVALID` | The provided key is in an invalid format. | Key is empty / too long / too short. |
+| `SCRIPT_ID_INCORRECT` | The provided script ID is incorrect / it does not exist. | Script ID does not exist or has been deleted. |
+| `SCRIPT_ID_INVALID` | The provided script ID is in an invalid format. | Script ID is too short / too long / contains non-hexadecimal characters. |
+| `INVALID_EXECUTOR` | HWID header contains invalid data. Executor might not be supported. | Executor not supported. |
+| `SECURITY_ERROR` | Request can not be validated by cloudflare | Signature does not match. |
+| `TIME_ERROR` | Client time is invalid. | Request took too long to complete or `os.time()` is broken. |
+| `UNKNOWN_ERROR` | Unknown server error - contact gg/luarmor | The upstream server closed the connection (outage or API restart). |
+
+## `KEY_VALID` data fields
+
+When the code is `KEY_VALID`, the table also includes a `data` field with these fields:
+
+| Field | Type | Value |
+| --- | --- | --- |
+| `auth_expire` | number (32-bit timestamp) | Expiry date of the key. It can be `-1` or `0` for lifetime keys. |
+| `note` | string | The user note. It can also be accessed in the obfuscated script via `LRM_UserNote` (see [runtime variables](/scripting/runtime-vars)). |
+| `total_executions` | number | Total executions made by this key. |

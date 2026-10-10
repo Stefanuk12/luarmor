@@ -1,50 +1,59 @@
 ---
-title: 'Verification'
-description: 'This page explains what "verified" Luarmor scripts are. This feature is optional, and you do not have to opt-in as a script developer.'
+title: "Verified Scripts"
+description: "Discontinued. What the verified badge meant and how it worked, kept for reference"
+tag: "Discontinued"
 ---
+
+<Warning>
+    **Verified scripts have been discontinued.** You can no longer enable Verified mode, and the Script Checker is offline. This page is kept for reference only.
+</Warning>
 
 ## For script developers
 
 <Warning>
-    Once you enable Verified mode, you can not turn it off due to safety reasons.
+    Once Verified mode was enabled, it could not be turned off, for safety reasons.
 
-    A reason for this is because if your Luarmor account gets hacked, bad actors **will not **be able to replace your already existing script to a malicious one without approval.
+    This meant that if your Luarmor account got hacked, bad actors **could not** replace your existing script with a malicious one without approval.
 </Warning>
 
-**Verified** scripts require manual approval by Luarmor owner (Federal). The **source code will be reviewed** by the Luarmor owner and deleted from our systems after obfuscation. 
+**Verified** scripts required manual approval by the Luarmor owner (Federal), who **reviewed the source code**. The source code was deleted from our systems after obfuscation.
 
-**Your data will be anonymized** and the reviewer will not see who submitted the script.
+**Your data was anonymized**, so the reviewer did not see who submitted the script. Your raw script was only seen by one person (Federal) and was not shared.
 
-The verification process usually takes less than 30 minutes depending on queue size and availability of the admin. In some cases, it might take up to 12-24 hours due to timezone differences or other reasons. You can check how long it will take on dashboard while creating/editing a script.
+Verification usually took less than 30 minutes, depending on the queue and the admin's availability. In some cases, it could take 12-24 hours due to timezone differences or other reasons. The dashboard showed the expected wait while you created or edited a script.
 
-This will ensure that script does not contain any malware or potentially dangerous code.
+The review made sure that the script did not contain malware or potentially dangerous code (for example, stealers, RATs, IP loggers or reflective code loaders).
 
-### Rules & Limitations
+### Rules and limitations
+
+To keep your users safe, you could not use certain functions and APIs in your code. Using them got your script update request rejected. A rejected request did not count towards your obfuscations.
 
 <Note>
-    New rules / limitations can be added anytime without notification. Existing rules will not be removed.
+    New rules could be added at any time without notice. Existing rules were never removed.
 </Note>
 
 <AccordionGroup>
     <Accordion title="Making requests to unknown external URLs">
-        You are not allowed to make requests to unknown external URLs. This includes but is not limited to:
+        You were not allowed to make requests to unknown external URLs. This included, but was not limited to:
+
         - `ip-api.com`
         - `whatismyip.com`
         - any other site that could be used to obtain information about the client.
     </Accordion>
     <Accordion title="Sending sensitive user information to webhooks / URLs">
-        You are not allowed to send IP addresses / cookies of your users to webhooks or other URLs. You can still send other stuff like in-game stats, usernames, etc., as long as they are not sensitive.
+        You were not allowed to send your users' IP addresses or cookies to webhooks or other URLs. You could still send other data, such as in-game stats and usernames, as long as it was not sensitive.
     </Accordion>
     <Accordion title="Code loading">
-        You will not be able to use `loadstring` or any similar mechanism (e.g., a Lua VM, `require`) with external & unpredictable sources like Pastebin, GitHub, or any other URL.
-        
-        Keep in mind that **you can still use these functions** if you are loading the code from a local source (e.g., `readfile`, in-game modules) or a string that's hard coded in your script. In some cases, public & known libraries will be allowed through URLs.
+        You could not use `loadstring` or any similar mechanism (for example, a Lua VM or `require`) with external, unpredictable sources such as Pastebin, GitHub or any other URL.
+
+        **You could still use these functions** to load code from a local source (for example, `readfile` or in-game modules) or from a string hard-coded in your script. In some cases, well-known public libraries were allowed through URLs.
     </Accordion>
     <Accordion title="Creating & writing files">
-        You are allowed to write or create files as long as their content is not retrieved from an external & unpredictable source. Also, file content must not be malicious or remotely changeable.
+        You could create and write files as long as their content was not retrieved from an external, unpredictable source. File content also could not be malicious or remotely changeable.
     </Accordion>
     <Accordion title="Potentially malicious code">
-        You are not allowed to abuse vulnerabilities within the platform to gain unauthorized access outside of the Luau sandbox. This includes but is not limited to:
+        You were not allowed to exploit vulnerabilities in the platform to gain unauthorized access outside of the Luau sandbox. This included, but was not limited to:
+
         - ACE/RCEs
         - PC username grabbers
         - Browser URL openers
@@ -52,7 +61,8 @@ This will ensure that script does not contain any malware or potentially dangero
         - Token loggers
     </Accordion>
     <Accordion title="Stealers">
-        Any type of stealers are not allowed in Verified scripts. This includes but is not limited to:
+        Stealers of any kind were not allowed in Verified scripts. This included, but was not limited to:
+
         - Pet stealers
         - Gem stealers
         - Auto traders
@@ -60,33 +70,62 @@ This will ensure that script does not contain any malware or potentially dangero
         - Cookie stealers
     </Accordion>
     <Accordion title="Obfuscated behavior">
-        If your script contains obfuscated or unpredictable code (e.g., accessing functions through runtime-generated names via `getfenv`, `_G`, `getrenv`, or similar environment functions/tables, obfuscated code, encrypted strings), your submission will be rejected.
+        If your script contained obfuscated or unpredictable code (for example, accessing functions through runtime-generated names via `getfenv`, `_G`, `getrenv`, or similar environment functions/tables, obfuscated code, encrypted strings), your submission was rejected.
     </Accordion>
 </AccordionGroup>
 
 ## For script users
 
 <Warning>
-    Keep in mind that **verified scripts** do not guarantee quality, we do not test the script in game. We only check it for malware or loggers. Once they are confirmed to be free of malware, they get published.
+    **Verified scripts** were not a guarantee of quality. We did not test scripts in game; we only checked them for malware and loggers, and published them once they were confirmed to be clean.
 </Warning>
 
-If a script is "verified", it means it has been reviewed by a human before publishing, and does not contain malicious code.
+A "verified" script was reviewed by a human before publishing and found to contain no malicious code.
 
 ### Checking if a script is verified
 
 <AccordionGroup>
-    <Accordion title="Through the site">
-        You can check if a script is verified through our [Script Checker](https://luarmor.net/check) page. Copy and paste the script ID into search bar and you will see certain security features of the script if it has been verified.
-    
+    <Accordion title="Through the site (unavailable)">
+        <Warning>
+            The Script Checker is offline, so this method no longer works.
+        </Warning>
+
+        You could check whether a script was verified on our [Script Checker](https://luarmor.net/check) page. If the script was verified, pasting its script ID into the search bar showed its security features.
+
         <Frame caption="The script ID within the loadstring">
-            <img src="/images/verification-script-id.avif" alt="The script ID within the loadstring" />
+            <img src="/images/verification-script-id.avif" alt="A Luarmor loader with the script ID highlighted in the loadstring URL" />
         </Frame>
+
+        The script ID is the 32-character string at the end of the loader URL, before `.lua`:
+
+        ```lua
+        loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/946129dd7686fa082f518538027093db.lua"))()
+        --                                                               ^ script ID
+        ```
     </Accordion>
     <Accordion title="Through the loadstring URL">
-        You can **also** check if loader URL has `/verified/` in it. If you see it, it means that script is a legitimate loader verified by Luarmor. **If you don't see it**, you can still lookup its ID on check page just to make sure.
-    
+        Check whether the loader URL contains `/verified/`. If it does, the script is a legitimate loader verified by Luarmor.
+
         <Frame caption="`/verified/` inside the URL for the loadstring">
-            <img src="/images/verification-loadstring.avif" alt="`/verified/` inside the URL for the loadstring" />
+            <img src="/images/verification-loadstring.avif" alt="A Luarmor loader with /verified/ highlighted in the loadstring URL" />
         </Frame>
+
+        ```lua
+        loadstring(game:HttpGet("https://api.luarmor.net/files/v3/verified/4d7aaefe8db83c8e77c1f0bf80be4f8f.lua"))()
+        ```
+
+        `cdn.luarmor.net` is also a safe domain.
+
+        <Frame caption="`/verified/` on the `cdn.luarmor.net` domain">
+            <img src="/images/verification-cdn-domain.png" alt="A loadstring from cdn.luarmor.net with /verified/ in the URL" />
+        </Frame>
+
+        ```lua
+        loadstring(game:HttpGet("https://cdn.luarmor.net/verified/test.lua"))()
+        ```
     </Accordion>
 </AccordionGroup>
+
+<Warning>
+    It is your responsibility to make sure that your loader and script IDs are legitimate. Check the domain (`luarmor.net`) before running a script. External loader sources (`github.com`, `pastebin.com` or custom URLs) might load a different script.
+</Warning>

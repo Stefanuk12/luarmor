@@ -1,46 +1,49 @@
 ---
 title: Runtime Variables
+description: "Read details about the current user, such as their Discord ID and total executions, from your script"
 ---
 
-Luarmor has runtime variables that allows you to access to user details such as Discord ID, total executions, script name, premium, user note, etc..
+Luarmor provides runtime variables that give your script details about the current user, such as their Discord ID, total executions, premium status and note, as well as the script name.
 
 <Warning>
-    Luarmor does not protect these runtime variables and they can be hooked and modified maliciously.
-    Make sure to add your own protections, if needed.
+    Luarmor does not protect these runtime variables, so they can be hooked and modified maliciously.
+    Add your own protections if needed.
 
-    Also, they are not updated at all.
-    You will need to track updates for variables like `LRM_SecondsLeft` **yourself**.
+    They are also never updated while your script runs.
+    You need to track changes to variables like `LRM_SecondsLeft` **yourself**.
 </Warning>
 
-They can be used for a lot of things. Check out this example:
-<Frame caption="An example script using runtime variables">
-    <img src="/images/runtime-vars-example.png" alt="An example script using runtime variables" />
-</Frame>
+For values that can't be spoofed, use [server-side webhook variables](/features/webhook-protection#server-side-variables) or the [Key Check Library](/scripting/key-check-library).
 
-## Every runtime variable
+Here's an example of what you can do with them:
 
-You can see a full list of runtime variables here:
+```lua
+print(LRM_ScriptName .. " has been loaded successfully!")
+print("Your discord ID is: " .. LRM_LinkedDiscordID)
+print("and you executed this script " .. LRM_TotalExecutions .. " in total")
+print("Your access will end in " .. LRM_SecondsLeft / 86400 .. " days")
 
-<AccordionGroup>
-    <Accordion title="LRM_IsUserPremium">
-        A `boolean` indicating if the user is premium or not. This is useful for FFA scripts ('freemium').
-    </Accordion>
-    <Accordion title="LRM_LinkedDiscordID">
-        The linked Discord ID of the user.
-    </Accordion>
-    <Accordion title="LRM_ScriptName">
-        The name of the current script.
-    </Accordion>
-    <Accordion title="LRM_TotalExecutions">
-        The total executions of the user. It will be `0` by default.
-    </Accordion>
-    <Accordion title="LRM_SecondsLeft">
-        The seconds left until expiry. It will be `math.huge` if `auth_expire` isn't set.
-    </Accordion>
-    <Accordion title="LRM_UserNote">
-        The user note. It will be `Not specified` by default.
-    </Accordion>
-    <Accordion title="LRM_ScriptVersion">
-        The version of the script, i.e. `0.0.0.1`.
-    </Accordion>
-</AccordionGroup>
+if LRM_IsUserPremium then
+    warn("You have premium access. Loading secret admin GUI!")
+    freemium_LoadAdmin()
+else
+    warn("You are using the free version.")
+end
+
+if string.find(LRM_UserNote, "beta") then
+    warn("You have beta access. Loading beta GUI")
+    LoadBetaGUI()
+end
+```
+
+## All runtime variables
+
+| Variable | Description |
+| --- | --- |
+| `LRM_IsUserPremium` | A `boolean` indicating whether the user is whitelisted (premium) or not. This is useful for Free for All (FFA) scripts with premium features ("freemium"). |
+| `LRM_LinkedDiscordID` | The linked Discord ID of the user. |
+| `LRM_ScriptName` | The name of the current script. |
+| `LRM_TotalExecutions` | The user's total number of executions. It is `0` by default. |
+| `LRM_SecondsLeft` | The number of seconds until the key expires. It is `math.huge` if `auth_expire` isn't set. |
+| `LRM_UserNote` | The user's note. It is `Not specified` by default. |
+| `LRM_ScriptVersion` | The version of the script as a `string`, e.g. `"0.0.0.3"`. |

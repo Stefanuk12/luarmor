@@ -1,57 +1,140 @@
 ---
 title: Macros
+description: "Luraph and Luarmor macros you can use in your script, including LRM_INIT_SCRIPT"
 ---
 
-Luarmor uses [Luraph™️](https://luraph.com) as the obfuscation provider, so their macros can also be used with Luarmor - along with Luarmor macros.
+Luarmor uses [Luraph](https://luraph.com) as its obfuscation provider, so you can use Luraph's macros in your script as well as Luarmor's own macros.
 
 <Note>
-    For more information on what a `constant function` is and is not, view [this](./optimisation#how-to-use-lph-no-virtualize).
+    For more information on what a constant function is and is not, see [how to use `LPH_NO_VIRTUALIZE`](/scripting/optimisation#how-to-use-lph_no_virtualize).
 </Note>
 
+## `LRM_INIT_SCRIPT`
+
+This macro lets you run a piece of code before your script runs. It accepts a **constant** function.
+
+It can be useful for displaying an "Enter a key" GUI, running anti-cheat bypasses, or anything else that must be executed before authentication. It works best when combined with the [key check library](/scripting/key-check-library).
+
+<Warning>
+    The function passed into this macro will **not** be obfuscated, so **anyone can read it** as plain source code. Don't put sensitive code in it.
+
+    You **must** yield *somewhere*, even if it's just a `task.wait()` at the end. Otherwise, `script_key` will read as `nil`.
+</Warning>
+
 <AccordionGroup>
-    <Accordion title="LRM_INIT_SCRIPT">
-        This macro allows you to run a piece of code before your script is ran. It accepts a **constant** function.
+    <Accordion title="Good usage">
+        ```lua
+        LRM_INIT_SCRIPT(function()
+            print("Hello, world!")
+            -- this wait is very important!!!
+            task.wait()
+        end)
+        ```
 
-        <Warning>
-            You **must** yield *somewhere*, even if it's just a `task.wait()` at the end. Otherwise, `script_key` will read as `nil`.
-        </Warning>
+        ```lua
+        LRM_INIT_SCRIPT(function()
+            -- some code
 
-        <Accordion title="Good usage">
-            ```lua
-            LRM_INIT_SCRIPT(function()
-                print("Hello, world!")
-                -- this wait is very important!!!
-                task.wait()
-            end)
-            ```
-
-            ```lua
-            LRM_INIT_SCRIPT(function()
-                -- some code
-
-                -- wait for the user to put the key in or something
-                while HasUserCompleted == false do
-                    -- but this wait is needed!! 
-                    task.wait()
-                end
-            end)
-            ```
-        </Accordion>
-
-        <Accordion title="Bad usage">
-            ```lua
-            LRM_INIT_SCRIPT(print("Hello, world!"))
-            ```
-            ```lua
-            LRM_INIT_SCRIPT("print('Hello, world!')")
-            ```
-            ```lua
-            local function init()
-                print("Hello, world!")
+            -- wait for the user to put the key in or something
+            while HasUserCompleted == false do
+                -- but this wait is needed!!
                 task.wait()
             end
-            LRM_INIT_SCRIPT(init)
-            ```
-        </Accordion>
+        end)
+        ```
+    </Accordion>
+    <Accordion title="Bad usage">
+        ```lua
+        LRM_INIT_SCRIPT(print("Hello, world!"))
+        ```
+
+        ```lua
+        LRM_INIT_SCRIPT("print('Hello, world!')")
+        ```
+
+        ```lua
+        local function init()
+            print("Hello, world!")
+            task.wait()
+        end
+        LRM_INIT_SCRIPT(init)
+        ```
+    </Accordion>
+    <Accordion title="Key input GUI example">
+        For a full key system GUI, you can start from [this template](https://github.com/Luckyware-Softworks/Example-Ad-Reward-Loader).
+
+        To display an async key UI, block execution with a loop at the end of the init script. Otherwise, the script will continue without a key and kick the user with a "no key found" error.
+
+        ```lua
+        LRM_INIT_SCRIPT(function()
+            local UI_lib = loadstring(.....)()
+
+            local Completed = false
+            local enteredKey
+
+            UI_lib:AddTab({
+                Title = "Enter a key",
+                Type = "InputBox",
+                OnClick = function(key)
+                    enteredKey = key
+                    Completed = true -- Let it go
+                end
+            })
+
+            UI_lib:Show()
+
+            -- Pend / block execution until the key is entered.
+            while not Completed do task.wait() end
+            script_key = enteredKey
+        end)
+        ```
+
+        To run a bypass or any other code that doesn't need to wait for user input, you don't need the blocking loop. Just add your code directly, but keep the yield from the warning above.
     </Accordion>
 </AccordionGroup>
+
+### Limitations
+
+- You can't reference upvalues inside an init script, because it is extracted from the obfuscated code and runs without them. Treat it as a completely separate context, and define every helper function or variable it uses inside it.
+- There can be only **one** init script per script, so you can use this macro only once.
+- The function you pass must be a constant. Do not pass a variable, e.g. `LRM_INIT_SCRIPT(handlerFn)`.
+
+## `LPH_NO_UPVALUES`
+
+Wrap a `hookfunction` hook in `LPH_NO_UPVALUES` to fix the "hook has more upvalues than original" error, which happens due to obfuscation.
+
+Before:
+
+```lua
+local old
+old = hookfunction(f, function(...)
+    return old(...)
+end)
+```
+
+After:
+
+```lua
+local old
+old = hookfunction(f, LPH_NO_UPVALUES(function(...)
+    return old(...)
+end))
+```
+
+If you are still having issues, make sure the argument you give to `LPH_NO_UPVALUES` is a constant function, not a variable.
+If you want to give the function a name, wrap it first and then pass the result:
+
+```lua
+local old
+local FunctionNameHere = LPH_NO_UPVALUES(function(...)
+    -- code
+    return old(...)
+end)
+
+old = hookfunction(f, FunctionNameHere)
+```
+
+## Other macros
+
+- `LPH_NO_VIRTUALIZE`: see [Optimisation](/scripting/optimisation).
+- `LRM_SEND_WEBHOOK` and `LRM_SANITIZE`: see [Webhook Protection](/features/webhook-protection).
