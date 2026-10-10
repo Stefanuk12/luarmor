@@ -1,0 +1,99 @@
+---
+title: Update Script
+description: "Upload new source code for an existing script and change its settings."
+---
+
+## Endpoint
+
+`PUT https://api.luarmor.net/v3/projects/{project_id}/scripts/{script_id}`
+
+## Path parameters
+
+| Name         | Type   | Required | Description         |
+|--------------|--------|----------|---------------------|
+| `project_id` | string | Yes      | Your project ID     |
+| `script_id`  | string | Yes      | Script ID to update |
+
+## Headers
+
+| Name                | Type   | Required | Description                                                       |
+|---------------------|--------|----------|-------------------------------------------------------------------|
+| `Authorization`     | string | Yes      | Your Luarmor API key                                              |
+| `Content-Type`      | string | Yes      | `application/json`                                                |
+| `x-turnstile-token` | string | No       | A solved Cloudflare Turnstile token, if the request is challenged |
+
+## Request body
+
+The body is the script's settings object, plus the new source code in `script`.
+
+<Tip>
+    Fetch the script's current settings from [Get API Key Details](/api-reference/endpoint/api-management/get-api-key-details), then send them back with only the fields you want to change. This keeps settings like `heartbeat` and `silent` as they were.
+</Tip>
+
+| Name           | Type    | Required | Description |
+|----------------|---------|----------|-------------|
+| `script`       | string  | Yes      | The new source code of the script |
+| `script_name`  | string  | No       | The script's name |
+| `ffa`          | boolean | No       | Free for All (FFA) mode: anyone can run the script without a key |
+| `silent`       | boolean | No       | Silent mode: disables Luarmor's console output. Not recommended. |
+| `heartbeat`    | boolean | No       | Heartbeat: makes the script more secure. Recommended. |
+| `lightning`    | boolean | No       | Lightning mode: removes some inline security checks to make the script run faster, at a small cost to security |
+| `is_v4_loader` | boolean | No       | Use the v4 loader |
+| `use_reactor`  | boolean | No       | Process the upload in the background (see [Success response](#success-response)) |
+
+```json
+{
+	"script_name": "Example Script",
+	"script": "print(\"Hello, world!\")",
+	"ffa": false,
+	"silent": false,
+	"heartbeat": true,
+	"lightning": false,
+	"is_v4_loader": true,
+	"use_reactor": true
+}
+```
+
+## Success response
+
+`200`: the script was updated.
+
+```json
+{
+	"success": true,
+	"message": "Script updated successfully!"
+}
+```
+
+If the script is processed in the background (`use_reactor`), the response includes a `track_progress` ID instead. Pass it to [Get Update Progress](/api-reference/endpoint/script-management/get-update-progress) to check when the update has finished.
+
+```json
+{
+	"success": true,
+	"track_progress": "<track_id>"
+}
+```
+
+## Error responses
+
+| Status | Meaning |
+|--------|---------|
+| `400`  | Bad request, usually an invalid API key |
+| `403`  | Your IP is not whitelisted, or the API key is incorrect |
+| `404`  | Script or project not found |
+| `504`  | Gateway timeout. Large uploads can time out even though Luarmor accepted them, so check whether `script_version` changed in [Get API Key Details](/api-reference/endpoint/api-management/get-api-key-details) before retrying. |
+
+If the response mentions that the script is `too large for this channel`, the upload was rejected and retrying will not help.
+
+## Example request
+
+```bash
+curl -X PUT -H "Authorization: <api_key>" \
+		 -H "Content-Type: application/json" \
+		 -d '{"script":"print(123)","is_v4_loader":true,"use_reactor":true}' \
+		 https://api.luarmor.net/v3/projects/<project_id>/scripts/<script_id>
+```
+
+<Note>
+    To update your script from GitHub Actions, use [luarmor-deploy-action](https://github.com/Stefanuk12/luarmor-deploy-action), which handles progress tracking and timeouts for you.
+</Note>

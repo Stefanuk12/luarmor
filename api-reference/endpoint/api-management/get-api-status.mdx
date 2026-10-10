@@ -1,0 +1,28 @@
+---
+title: Get API Status
+description: "Check the current status and version of the Luarmor API."
+---
+
+## Endpoint
+
+`GET https://api.luarmor.net/status`
+
+## Success response
+
+`200`: returns API status and version information.
+
+```json
+{
+	"version": "v3",
+	"active": true,
+	"message": "API is up and working!",
+	"warning": false,
+	"warning_message": "No warning"
+}
+```
+
+## Example request
+
+```bash
+curl https://api.luarmor.net/status
+```

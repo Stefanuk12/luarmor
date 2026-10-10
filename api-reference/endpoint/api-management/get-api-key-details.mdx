@@ -1,0 +1,91 @@
+---
+title: Get API Key Details
+description: "Retrieve details about your API key: your account, plus every project and script linked to it (project and script IDs, script names, versions and settings)."
+---
+
+## Endpoint
+
+`GET https://api.luarmor.net/v3/keys/{api_key}/details`
+
+Example URL: `https://api.luarmor.net/v3/keys/300058fb1987f0e019b0c980ad01/details`
+
+## Path parameters
+
+| Name      | Type   | Required | Description                   |
+|-----------|--------|----------|-------------------------------|
+| `api_key` | string | Yes      | The API key to get details for |
+
+## Success response
+
+`200`: returns details about the API key, its account, and its projects.
+
+```json
+{
+	"success": true,
+	"message": "Success!",
+	"email": "federal@fbi.gov",
+	"discord_id": "493827492379239857",
+	"expires_at": 1674606328,
+	"registered_at": 1672014328,
+	"plan": "r",
+	"enabled": 1,
+	"projects": [
+		{
+			"platform": "roblox",
+			"id": "2923c450865b60f65a5d06bb39ff1335",
+			"name": "Alka-Seltzer Hub",
+			"settings": {
+				"reset_hwid_cooldown": -1
+			},
+			"scripts": [
+				{
+					"script_name": "server crasher (free)",
+					"script_id": "ef67bc7f7bd0948f4fff336274a4a345",
+					"script_version": "0008",
+					"ffa": true,
+					"silent": false
+				},
+				{
+					"script_name": "premium one",
+					"script_id": "df3a1b7d79ceb911f8ffa762b0bd0596",
+					"script_version": "0000",
+					"ffa": false,
+					"silent": false
+				}
+			]
+		}
+	]
+}
+```
+
+## Error responses
+
+| Status | Meaning                          |
+|--------|----------------------------------|
+| `400`  | The API key is wrong.            |
+| `403`  | The API key is no longer valid.  |
+
+Example `400` response:
+
+```json
+{
+	"success": false,
+	"message": "Wrong API key"
+}
+```
+
+Example `403` response:
+
+```json
+{
+	"success": false,
+	"message": "Invalid API key! Visit https://luarmor.net/ to get access."
+}
+```
+
+## Example request
+
+```bash
+curl -H "Authorization: <api_key>" \
+		 https://api.luarmor.net/v3/keys/<api_key>/details
+```

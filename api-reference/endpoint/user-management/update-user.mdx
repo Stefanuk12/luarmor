@@ -1,0 +1,69 @@
+---
+title: Update User
+description: "Edit an existing user."
+---
+
+Any field you leave out stays unchanged.
+
+## Endpoint
+
+`PATCH https://api.luarmor.net/v3/projects/{project_id}/users`
+
+## Path parameters
+
+| Name         | Type   | Required | Description                                |
+|--------------|--------|----------|--------------------------------------------|
+| `project_id` | string | Yes      | ID of the project that the user belongs to |
+
+## Headers
+
+| Name            | Type   | Required | Description          |
+|-----------------|--------|----------|----------------------|
+| `Authorization` | string | Yes      | Your Luarmor API key |
+
+## Request body
+
+| Name          | Type   | Required | Description |
+|---------------|--------|----------|-------------|
+| `user_key`    | string | Yes      | Key of the user to edit |
+| `identifier`  | string | No       | Identifier of the user to whitelist, such as their HWID. |
+| `auth_expire` | int32  | No       | Unix timestamp (seconds) of the expiry date. Use `-1` for a key that never expires. |
+| `note`        | string | No       | Custom note to help you identify the user. |
+| `discord_id`  | string | No       | Discord ID of the user. |
+
+```json
+{
+	"user_key": "The key to update",
+	"identifier": "New identifier (optional)",
+	"discord_id": "New Discord ID (optional)",
+	"auth_expire": 1700000000,
+	"note": "Optional note"
+}
+```
+
+## Success response
+
+`200`: the user was edited successfully.
+
+```json
+{
+	"success": true,
+	"message": "Success!"
+}
+```
+
+## Error responses
+
+| Status | Meaning     |
+|--------|-------------|
+| `400`  | Bad request |
+| `403`  | Forbidden   |
+
+## Example request
+
+```bash
+curl -X PATCH -H "Authorization: <api_key>" \
+		 -H "Content-Type: application/json" \
+		 -d '{"user_key":"...","auth_expire":-1}' \
+		 https://api.luarmor.net/v3/projects/<project_id>/users
+```

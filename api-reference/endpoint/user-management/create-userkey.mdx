@@ -1,0 +1,114 @@
+---
+title: Create User/Key
+description: "Generate a new key for your project."
+---
+
+If you don't specify any parameters, the key is "unassigned": the first user to use it claims it, and their HWID or Discord ID is linked to it automatically.
+
+Users whose HWID is linked to a key can run the script, as long as they set `script_key` at the top of it (unless Free for All (FFA) mode is on).
+
+## Basics
+
+Every user you add with a POST request automatically gets a randomly generated key, even if you don't provide any details about them, such as their HWID or Discord ID.
+
+- If **no HWID** is assigned to the key, the user's HWID is assigned automatically the first time they run the script with `script_key = "key here";` at the top.
+- If **no Discord ID** is assigned to the key, the user can claim the key with the **Redeem** button on the Discord bot panel. Once their Discord ID is linked, they can use the panel's **Reset HWID** button, if HWID resets are enabled in your project settings.
+
+<Warning>
+    The user **must add** `script_key = "KEY HERE";` at the top of the loader script. Without it, the script will not run unless FFA mode is on.
+</Warning>
+
+Each project has its own database of users and keys. A user who is whitelisted in a project can **run all scripts** in that project. This is known as "script hub logic".
+
+<Tip>
+    You can add a **custom note** to each user by including the `note` field in your request body. This makes the user easier to identify.
+</Tip>
+
+## Expiry dates and time limited keys
+
+There are 2 ways to restrict a key based on time:
+
+1. `key_days`
+2. `auth_expire`
+
+`key_days` is the number of days the key lasts, counted from when it is first redeemed or executed. This lets you generate time-limited keys in advance and keep them in stock without their timer starting.
+
+`auth_expire` is the Unix timestamp of the expiry date. If you generate a key with `key_days`, `auth_expire` is set automatically to the current time + (`key_days` * 86400) when the key is activated.
+
+If you provide `auth_expire` instead of `key_days`, you must also include `identifier` or `discord_id`. This tells the server the key is already claimed, so its countdown starts immediately. Without either of them, the time between now and `auth_expire` is converted to `key_days` automatically.
+
+<Info>
+    You can set `discord_id` and `identifier` when generating a key. If you don't, they are assigned automatically when the user runs the script or uses the **Redeem** button on the Discord bot panel.
+</Info>
+
+## Endpoint
+
+`POST https://api.luarmor.net/v3/projects/{project_id}/users`
+
+## Path parameters
+
+| Name         | Type   | Required | Description                                            |
+|--------------|--------|----------|--------------------------------------------------------|
+| `project_id` | string | Yes      | ID of the project to add the key to                     |
+
+## Headers
+
+| Name            | Type   | Required | Description          |
+|-----------------|--------|----------|----------------------|
+| `Authorization` | string | Yes      | Your Luarmor API key |
+
+## Request body
+
+| Name          | Type   | Required | Description |
+|---------------|--------|----------|-------------|
+| `identifier`  | string | No       | Identifier of the user to whitelist, such as their HWID. |
+| `auth_expire` | int32  | No       | Unix timestamp (seconds) of the expiry date. If you provide neither this nor `key_days`, the key never expires. See [Expiry dates and time limited keys](#expiry-dates-and-time-limited-keys). |
+| `note`        | string | No       | Custom note to help you identify the user. |
+| `discord_id`  | string | No       | Discord ID of the user. Until a Discord ID is linked, the user can't reset their HWID themselves. They can link one with the **Redeem** button on the Discord bot panel, if you have set up the bot. |
+| `key_days`    | number | No       | Number of days the key lasts once the user activates it. See [Expiry dates and time limited keys](#expiry-dates-and-time-limited-keys). |
+
+```json
+{
+	"identifier": "HWID or unique identifier",
+	"discord_id": "Discord ID to link (optional)",
+	"key_days": 30,
+	"note": "Optional note"
+}
+```
+
+## Success response
+
+`200`: the key was created.
+
+```json
+{
+	"success": true,
+	"message": "Success!",
+	"user_key": "awIUiHenZzfScOsqkXwGHyRAOsTTcPMR"
+}
+```
+
+## Error responses
+
+| Status | Meaning         |
+|--------|-----------------|
+| `400`  | Bad request     |
+| `403`  | Invalid API key |
+
+Example error response:
+
+```json
+{
+	"success": false,
+	"message": "Discord ID already exist."
+}
+```
+
+## Example request
+
+```bash
+curl -X POST -H "Authorization: <api_key>" \
+		 -H "Content-Type: application/json" \
+		 -d '{"identifier":"abc123"}' \
+		 https://api.luarmor.net/v3/projects/<project_id>/users
+```

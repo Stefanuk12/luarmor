@@ -1,33 +1,92 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: "Luarmor API"
+description: "Authentication, rate limits and errors for the Luarmor HTTP API"
+sidebarTitle: "Introduction"
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+Luarmor provides an HTTP API for managing scripts, users and keys.
 
-## Welcome
+You can use it to control your Luarmor projects programmatically, manage user access, and update scripts and their settings.
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+<Warning>
+    **IP whitelisting required:** the Luarmor HTTP API is not public. Only script owners with a Luarmor account can use it, and only from a whitelisted IP address.
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+    See [IP whitelisting](#ip-whitelisting) under Authentication for more information.
+</Warning>
+
+## Things to remember
+
+### Headers
+
+The `Content-Type` header must be set to `application/json` in all requests.
+
+### Rate limits
+
+- Each endpoint has its own rate limits, but generally you can make **60 requests per minute**.
+- If you exceed the limit, you get a `429` status code.
+
+<Warning>
+    If you exceed the rate limit, it may take a while before you can make requests again.
+</Warning>
+
+### Parameter types
+
+You can pass parameters in four different ways:
+
+| Type | Example |
+|------|---------|
+| Path | `/data/PARAMETER_HERE/stuff` |
+| Query | `/data/things/stuff?paramName=PARAMETER_HERE` |
+| Body | `{ "fieldName": "PARAMETER_HERE" }` |
+| Header | `{ "headerName": "HEADER VALUE" }` |
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+All API requests require authentication via an API key. You can find your API key on your [Luarmor profile](https://luarmor.net/profile), and it is also sent to you by email when you register. If you have lost it, see [Account management](/troubleshooting/script-owners#account-management).
+
+To find your project and script IDs, see [Where is the script ID and project ID?](/troubleshooting/script-owners#uploading-scripts).
+
+Most endpoints take the key in the `Authorization` header, with no prefix:
+
+```http
+GET https://api.luarmor.net/v3/projects/{project_id}/users
+Authorization: YOUR_API_KEY
+```
+
+The API key endpoints ([Get API Key Details](/api-reference/endpoint/api-management/get-api-key-details) and [Get API Key Stats](/api-reference/endpoint/api-management/get-api-key-stats)) take the API key as a path parameter instead.
+
+<Warning>
+    Your API key gives full control over your projects. Never put it in a script you distribute, and never share it with anyone you do not fully trust.
+</Warning>
+
+### IP whitelisting
+
+You must whitelist your server's IP address on the [Luarmor dashboard](https://luarmor.net/profile) to make API calls. Otherwise, your requests will be blocked by Cloudflare.
+
+To find the IP address to whitelist, open the [Luarmor IP trace page](https://api.luarmor.net/cdn-cgi/trace) from your server and use the `ip` value.
+
+If you are using a service that does not give you a static IP address, you must either use a proxy with a static IP or switch to a different service.
+
+## Responses and errors
+
+Responses are JSON. Every response includes a `success` boolean and, usually, a human-readable `message` explaining what happened.
 
 ```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
+{
+  "success": false,
+  "message": "Invalid API key"
+}
 ```
+
+| Status | Meaning |
+|--------|---------|
+| 200 | The request succeeded |
+| 400 | Bad request. Usually an invalid API key or a missing parameter |
+| 403 | Forbidden. Usually your IP is not whitelisted, or the API key is incorrect |
+| 404 | The project, script or user does not exist |
+| 429 | You exceeded the [rate limit](#rate-limits) |
+| 504 | Gateway timeout. This can happen when uploading large scripts; see [Update Script](/api-reference/endpoint/script-management/update-script) |
+
+<Tip>
+    Always check `message` when a request fails, as it usually tells you exactly what went wrong.
+</Tip>

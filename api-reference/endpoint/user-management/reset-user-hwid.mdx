@@ -1,0 +1,85 @@
+---
+title: Reset User HWID
+description: "Reset the HWID linked to a key."
+---
+
+## Endpoint
+
+`POST https://api.luarmor.net/v3/projects/{project_id}/users/resethwid`
+
+## Path parameters
+
+| Name         | Type   | Required | Description                      |
+|--------------|--------|----------|----------------------------------|
+| `project_id` | string | Yes      | Project ID that contains the key |
+
+## Headers
+
+| Name            | Type   | Required | Description          |
+|-----------------|--------|----------|----------------------|
+| `Authorization` | string | Yes      | Your Luarmor API key |
+
+## Request body
+
+| Name       | Type    | Required | Description |
+|------------|---------|----------|-------------|
+| `user_key` | string  | Yes      | Key to reset the HWID of |
+| `force`    | boolean | No       | If `true`, the reset ignores the HWID reset cooldown and works even if HWID resets are disabled for the project. |
+
+```json
+{
+	"user_key": "Key to reset HWID for",
+	"force": false
+}
+```
+
+## Success response
+
+`200`: the HWID was reset.
+
+```json
+{
+	"success": true,
+	"message": "Successfully reset!"
+}
+```
+
+## Error responses
+
+| Status | Meaning                             |
+|--------|-------------------------------------|
+| `400`  | Bad request. See the reasons below. |
+| `404`  | Key or project not found            |
+
+There are a few reasons you might get a `400`:
+
+- **The user reset their HWID too recently (cooldown).** Set `"force": true` to bypass the cooldown.
+- **HWID resets are disabled for this project.** Set `"force": true` to reset it anyway.
+- **The user is banned.** Unban them first.
+
+Example `400` response:
+
+```json
+{
+	"success": false,
+	"message": "User is on cooldown."
+}
+```
+
+Example `404` response:
+
+```json
+{
+	"success": false,
+	"message": "User key doesn't exist"
+}
+```
+
+## Example request
+
+```bash
+curl -X POST -H "Authorization: <api_key>" \
+		 -H "Content-Type: application/json" \
+		 -d '{"user_key":"...","force":true}' \
+		 https://api.luarmor.net/v3/projects/<project_id>/users/resethwid
+```

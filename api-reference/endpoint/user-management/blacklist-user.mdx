@@ -1,0 +1,49 @@
+---
+title: Blacklist User
+description: "Blacklist an existing key, and the HWID linked to it (if any)."
+---
+
+## Endpoint
+
+`POST https://api.luarmor.net/v3/projects/{project_id}/users/blacklist`
+
+## Path parameters
+
+| Name         | Type   | Required | Description                      |
+|--------------|--------|----------|----------------------------------|
+| `project_id` | string | Yes      | Project ID that contains the key |
+
+## Headers
+
+| Name            | Type   | Required | Description          |
+|-----------------|--------|----------|----------------------|
+| `Authorization` | string | Yes      | Your Luarmor API key |
+
+## Request body
+
+| Name         | Type   | Required | Description |
+|--------------|--------|----------|-------------|
+| `user_key`   | string | Yes      | Key to blacklist |
+| `ban_reason` | string | No       | Reason for the blacklist, shown to the user when they run the script. |
+| `ban_expire` | int32  | No       | Unix timestamp of when the ban expires. Set it to `-1` or leave it out for a permanent ban. |
+
+```json
+{
+	"user_key": "Key to blacklist",
+	"ban_reason": "Reason for blacklisting",
+	"ban_expire": -1
+}
+```
+
+<Info>
+    Blacklisting assigns the key an `unban_token`, which you can use with [Unban User](/api-reference/endpoint/user-management/unban-user). You can find it in the user objects returned by [Get Users](/api-reference/endpoint/user-management/get-users).
+</Info>
+
+## Example request
+
+```bash
+curl -X POST -H "Authorization: <api_key>" \
+		 -H "Content-Type: application/json" \
+		 -d '{"user_key":"...","ban_reason":"Chargeback","ban_expire":-1}' \
+		 https://api.luarmor.net/v3/projects/<project_id>/users/blacklist
+```

@@ -1,0 +1,64 @@
+---
+title: Get API Key Stats
+description: "Retrieve usage statistics for your API key: obfuscations used, script and user counts, your plan's limits (max scripts, users and obfuscations), attacks blocked, and execution graph values."
+---
+
+## Endpoint
+
+`GET https://api.luarmor.net/v3/keys/{api_key}/stats`
+
+Example URL: `https://api.luarmor.net/v3/keys/300058fb1987f0e019b0c980ad01/stats?noUsers=true`
+
+## Path parameters
+
+| Name      | Type   | Required | Description                 |
+|-----------|--------|----------|-----------------------------|
+| `api_key` | string | Yes      | The API key to get stats for |
+
+## Query parameters
+
+| Name      | Type    | Required | Description |
+|-----------|---------|----------|-------------|
+| `noUsers` | boolean | No       | Controls whether user information (how many users there are, and how many are banned or whitelisted) is included in the response. Optional; setting it may make the server respond slightly faster. |
+
+## Success response
+
+`200`: returns statistics and usage data for the API key.
+
+```json
+{
+	"success": true,
+	"message": "Success!",
+	"execution_data": {
+		"frequency": 86400,
+		"executions": [
+			5, 20, 0, 0, 0, 0, 0, 1900
+		]
+	},
+	"stats": {
+		"obfuscations": 10,
+		"scripts": 3,
+		"users": 3,
+		"attacks_blocked": 0,
+		"default": {
+			"scripts": 18,
+			"users": 10000,
+			"obfuscations": 3000
+		},
+		"reset_at": 1672014328
+	}
+}
+```
+
+## Error responses
+
+| Status | Meaning         |
+|--------|-----------------|
+| `403`  | Invalid API key |
+
+## Example request
+
+```bash
+curl -H "Authorization: <api_key>" \
+		 "https://api.luarmor.net/v3/keys/<api_key>/stats?noUsers=true"
+```

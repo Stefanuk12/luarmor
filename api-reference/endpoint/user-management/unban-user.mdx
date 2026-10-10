@@ -1,0 +1,32 @@
+---
+title: Unban User
+description: "Unban a blacklisted key using its unban token."
+---
+
+This endpoint doesn't need your API key. All you need is the key's `unban_token`: a unique, random 32-character string that is generated each time the key is blacklisted. You can find it in the user objects returned by [Get Users](/api-reference/endpoint/user-management/get-users).
+
+You can send a GET request from any HTTP client, or just open the URL in your browser.
+
+## Endpoint
+
+`GET https://api.luarmor.net/v3/projects/{project_id}/users/unban`
+
+Example URL: `https://api.luarmor.net/v3/projects/123456abcdef/users/unban?unban_token=Xpsy9wegDpA5XS`
+
+## Path parameters
+
+| Name         | Type   | Required | Description     |
+|--------------|--------|----------|-----------------|
+| `project_id` | string | Yes      | Your project ID |
+
+## Query parameters
+
+| Name          | Type   | Required | Description |
+|---------------|--------|----------|-------------|
+| `unban_token` | string | Yes      | The key's unban token |
+
+## Example request
+
+```bash
+curl "https://api.luarmor.net/v3/projects/<project_id>/users/unban?unban_token=..."
+```

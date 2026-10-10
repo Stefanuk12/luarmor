@@ -1,0 +1,64 @@
+---
+title: Get Update Progress
+description: "Check the progress of a script update that is being processed in the background."
+---
+
+## Endpoint
+
+`GET https://api.luarmor.net/v3/projects/{project_id}/scripts/{script_id}/progress/{track_id}`
+
+## Path parameters
+
+| Name         | Type   | Required | Description |
+|--------------|--------|----------|-------------|
+| `project_id` | string | Yes      | Your project ID |
+| `script_id`  | string | Yes      | The script being updated |
+| `track_id`   | string | Yes      | The `track_progress` ID returned by [Update Script](/api-reference/endpoint/script-management/update-script) |
+
+## Success response
+
+While the update is running, `status` is `processing` and `reactor_status` shows the current stage, such as `parsing` or `obfuscating`.
+
+```json
+{
+	"success": true,
+	"status": "processing",
+	"message": "Processing..",
+	"reactor_status": "obfuscating"
+}
+```
+
+Once finished, `status` is `completed` and `result` holds the outcome of the update. Check `result.success`, since a completed update can still have failed.
+
+```json
+{
+	"success": true,
+	"status": "completed",
+	"message": "Completed",
+	"reactor_status": "completed",
+	"result": {
+		"success": true,
+		"message": "Script updated successfully!"
+	}
+}
+```
+
+Any other `status`, or `success: false`, means the update failed. The reason is in `message`.
+
+<Tip>
+    Poll this endpoint every couple of seconds until `status` is no longer `processing`.
+</Tip>
+
+## Error responses
+
+| Status | Meaning |
+|--------|---------|
+| `400`  | Bad request, usually an invalid API key |
+| `403`  | Your IP is not whitelisted, or the API key is incorrect |
+
+## Example request
+
+```bash
+curl -H "Authorization: <api_key>" \
+		 https://api.luarmor.net/v3/projects/<project_id>/scripts/<script_id>/progress/<track_id>
+```

@@ -1,0 +1,64 @@
+---
+title: Delete User/Key
+description: "Delete a key from your project."
+---
+
+Deleting a key also removes access for the user whose HWID or Discord ID is linked to it.
+
+## Endpoint
+
+`DELETE https://api.luarmor.net/v3/projects/{project_id}/users`
+
+Example URL: `https://api.luarmor.net/v3/projects/3f98888f9999c9999e99a2/users?user_key=n1gG3Rs3CkmYd1Ck64gg0t`
+
+## Path parameters
+
+| Name         | Type   | Required | Description                                        |
+|--------------|--------|----------|----------------------------------------------------|
+| `project_id` | string | Yes      | ID of the project to remove the user's access from |
+
+## Query parameters
+
+| Name       | Type   | Required | Description   |
+|------------|--------|----------|---------------|
+| `user_key` | string | Yes      | Key to delete |
+
+## Headers
+
+| Name            | Type   | Required | Description          |
+|-----------------|--------|----------|----------------------|
+| `Authorization` | string | Yes      | Your Luarmor API key |
+
+## Success response
+
+`200`: the key has been deleted.
+
+```json
+{
+	"success": true,
+	"message": "User has been deleted!"
+}
+```
+
+## Error responses
+
+| Status | Meaning                      |
+|--------|------------------------------|
+| `403`  | Invalid API key              |
+| `404`  | Wrong project ID or user key |
+
+Example error response:
+
+```json
+{
+	"success": false,
+	"message": "Key not found"
+}
+```
+
+## Example request
+
+```bash
+curl -X DELETE -H "Authorization: <api_key>" \
+		 "https://api.luarmor.net/v3/projects/<project_id>/users?user_key=..."
+```

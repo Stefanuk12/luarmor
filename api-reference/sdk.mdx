@@ -1,9 +1,38 @@
 ---
-title: SDKs
-description: Find SDKs for your favorite programming languages
+title: 'SDKs & Libraries'
+description: 'Official and community SDKs for the Luarmor API'
 ---
 
+## Official SDKs
+
 <CardGroup>
-    <Card title="Rust" icon="rust" href="https://crates.io/crates/luarmor"/ >
-    <Card title="JavaScript" icon="js" href="https://www.npmjs.com/package/luarmor-ts"/ >
+    <Card title="Rust" icon="rust" href="https://crates.io/crates/luarmor">
+        Official Rust SDK for the Luarmor API
+    </Card>
+    <Card title="JavaScript/TypeScript" icon="js" href="https://www.npmjs.com/package/luarmor-ts">
+        Official TypeScript SDK, available on npm
+    </Card>
 </CardGroup>
+
+## Using the API directly
+
+If you prefer not to use an SDK, you can call the HTTP API directly from any programming language that can make HTTP requests.
+
+### Requirements
+
+- An HTTP client library (`curl`, `requests`, `axios`, etc.)
+- Your Luarmor API key (from [luarmor.net/profile](https://luarmor.net/profile))
+- A whitelisted server IP address (see [IP whitelisting](/api-reference/introduction#ip-whitelisting))
+
+### Basic request template
+
+```http
+POST https://api.luarmor.net/v3/projects/{project_id}/users
+Authorization: YOUR_API_KEY
+Content-Type: application/json
+
+{
+  "discord_id": "optional",
+  "key_days": 30
+}
+```

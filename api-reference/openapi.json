@@ -1,94 +1,46 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
+    "title": "Luarmor API",
+    "description": "Comprehensive API for managing Luarmor scripts, users, and keys",
     "license": {
       "name": "MIT"
     },
-    "version": "1.0.0"
+    "version": "3.0.0"
   },
   "servers": [
     {
-      "url": "http://sandbox.mintlify.com"
+      "url": "https://api.luarmor.net"
     }
   ],
   "security": [
     {
-      "bearerAuth": []
+      "ApiKeyAuth": []
     }
   ],
   "paths": {
-    "/plants": {
+    "/status": {
       "get": {
-        "description": "Returns all plants from the system that the user has access to",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "The maximum number of results to return",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
+        "tags": [
+          "API Management"
         ],
+        "summary": "Get API Status",
+        "description": "Returns the current version and status information about the Luarmor API",
+        "security": [],
         "responses": {
           "200": {
-            "description": "Plant response",
+            "description": "API is operational",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Plant"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "description": "Creates a new plant in the store",
-        "requestBody": {
-          "description": "Plant to add to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Plant"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/ApiStatus"
+                },
+                "example": {
+                  "version": "v3",
+                  "active": true,
+                  "message": "API is up and working!",
+                  "warning": false,
+                  "warning_message": "No warning"
                 }
               }
             }
@@ -96,35 +48,828 @@
         }
       }
     },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
+    "/v3/keys/{api_key}/details": {
+      "get": {
+        "tags": [
+          "API Management"
+        ],
+        "summary": "Get API Key Details",
+        "description": "Get details of your API key: project and script IDs, script names, versions and settings.",
         "parameters": [
           {
-            "name": "id",
+            "name": "api_key",
             "in": "path",
-            "description": "ID of plant to delete",
             "required": true,
+            "description": "API key to get details of",
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string"
+            },
+            "example": "300058fb1987f0e019b0c980ad01"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KeyDetails"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Success!",
+                  "email": "federal@fbi.gov",
+                  "discord_id": "493827492379239857",
+                  "expires_at": 1674606328,
+                  "registered_at": 1672014328,
+                  "plan": "r",
+                  "enabled": 1,
+                  "projects": [
+                    {
+                      "platform": "roblox",
+                      "id": "2923c450865b60f65a5d06bb39ff1335",
+                      "name": "Alka-Seltzer Hub",
+                      "settings": {
+                        "reset_hwid_cooldown": -1
+                      },
+                      "scripts": [
+                        {
+                          "script_name": "server crasher (free)",
+                          "script_id": "ef67bc7f7bd0948f4fff336274a4a345",
+                          "script_version": "0008",
+                          "ffa": true,
+                          "silent": false
+                        },
+                        {
+                          "script_name": "premium one",
+                          "script_id": "df3a1b7d79ceb911f8ffa762b0bd0596",
+                          "script_version": "0000",
+                          "ffa": false,
+                          "silent": false
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Wrong API key"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Incorrect API key. The API key is no longer valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid API key! Visit https://luarmor.net/ to get access."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/keys/{api_key}/stats": {
+      "get": {
+        "tags": [
+          "API Management"
+        ],
+        "summary": "Get API Key Stats",
+        "description": "Fetch the stats of your API key: usage details, remaining and max obfuscations, max users, execution amounts and execution graph values.",
+        "parameters": [
+          {
+            "name": "api_key",
+            "in": "path",
+            "required": true,
+            "description": "API key to get stats of",
+            "schema": {
+              "type": "string"
+            },
+            "example": "300058fb1987f0e019b0c980ad01"
+          },
+          {
+            "name": "noUsers",
+            "in": "query",
+            "description": "Controls the user information in the reply (how many users there are, how many are banned, how many are whitelisted). Optional; you can leave it out entirely. If included, the server may respond slightly faster.",
+            "schema": {
+              "type": "boolean"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KeyStats"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Success!",
+                  "execution_data": {
+                    "frequency": 86400,
+                    "executions": [
+                      5,
+                      20,
+                      0,
+                      0,
+                      0,
+                      0,
+                      0,
+                      1900
+                    ]
+                  },
+                  "stats": {
+                    "obfuscations": 10,
+                    "scripts": 3,
+                    "users": 3,
+                    "attacks_blocked": 0,
+                    "default": {
+                      "scripts": 18,
+                      "users": 10000,
+                      "obfuscations": 3000
+                    },
+                    "reset_at": 1672014328
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid API key"
+          }
+        }
+      }
+    },
+    "/v3/projects/{project_id}/users": {
+      "post": {
+        "tags": [
+          "User Management"
+        ],
+        "summary": "Create User/Key",
+        "description": "Generate a new user key. If you don't specify any parameters, the key will be 'unassigned', which means a user with the key can claim it and automatically assign their HWID / Discord ID to it. Users must add `script_key = \"KEY\";` on top of the loader unless FFA mode is on.",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the project that you want to add the user key to",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Key has been added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateUserResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Success!",
+                  "user_key": "awIUiHenZzfScOsqkXwGHyRAOsTTcPMR"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Discord ID already exist."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid API key"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "User Management"
+        ],
+        "summary": "Get Users",
+        "description": "Fetch all users from a project, optionally filtered. To get someone's user_key from their discord_id, the key must have it linked first. The response contains an array of users; with a filter value (e.g. discord_id) the array contains one user, so read users[0].",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of your project",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "discord_id",
+            "in": "query",
+            "description": "Discord ID to get the connected user",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user_key",
+            "in": "query",
+            "description": "Key to get the connected user",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "identifier",
+            "in": "query",
+            "description": "HWID to get the connected user",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Start offset of the results. Useful for paging users and not fetching all at once.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "until",
+            "in": "query",
+            "description": "Finish index of the results. Useful for limiting the results to a specific range between 'from' and 'until'.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Filters results that contain this value anywhere in their identifier, user_key, discord_id or note properties.",
+            "schema": {
+              "type": "string"
             }
           }
         ],
         "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
-          },
-          "400": {
-            "description": "unexpected error",
+          "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/UsersResponse"
                 }
               }
             }
+          },
+          "403": {
+            "description": "Invalid API key"
+          },
+          "404": {
+            "description": "Project not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Project not found!"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "User Management"
+        ],
+        "summary": "Update User",
+        "description": "Edit an already existing user. Fields you don't provide stay unchanged.",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the project that the user belongs to",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Edited successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Success!"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User Management"
+        ],
+        "summary": "Delete User/Key",
+        "description": "Delete a key from your project. This also removes the access of the user who has their HWID / Discord ID linked to that key.",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the project to remove the user's access from",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user_key",
+            "in": "query",
+            "required": true,
+            "description": "Key to delete",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Key has been deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "User has been deleted!"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid API key"
+          },
+          "404": {
+            "description": "Wrong project ID / user key",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Key not found"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/projects/{project_id}/users/resethwid": {
+      "post": {
+        "tags": [
+          "User Management"
+        ],
+        "summary": "Reset User HWID",
+        "description": "Reset the HWID of a user key",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "description": "Project ID that contains the key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_key": {
+                    "type": "string",
+                    "description": "Key to reset the HWID of."
+                  },
+                  "force": {
+                    "type": "boolean",
+                    "description": "Whether the HWID reset is forced. If true, it ignores the reset HWID cooldown."
+                  }
+                },
+                "required": [
+                  "user_key"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Successfully reset!"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request: user reset their HWID too frequently (use force: true), reset HWID is disabled for this project (can be forced), or user is banned (unban first).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "User is on cooldown."
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Key or project not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "User key doesn't exist"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/projects/{project_id}/users/linkdiscord": {
+      "post": {
+        "tags": [
+          "User Management"
+        ],
+        "summary": "Link Discord ID",
+        "description": "Link a Discord ID to a user key",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "description": "Project ID that contains the key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_key": {
+                    "type": "string",
+                    "description": "Key to link the Discord ID to"
+                  },
+                  "discord_id": {
+                    "type": "string",
+                    "description": "Discord ID (e.g. 1234578635849)"
+                  },
+                  "force": {
+                    "type": "boolean",
+                    "description": "If true, overwrites the Discord ID if the key already has one linked."
+                  }
+                },
+                "required": [
+                  "user_key",
+                  "discord_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Success!"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request: a Discord ID is already linked to this key (use force: true), another key is linked to the same Discord ID (delete the other key), or invalid Discord ID.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "This key already has a discord linked to it"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/projects/{project_id}/users/blacklist": {
+      "post": {
+        "tags": [
+          "User Management"
+        ],
+        "summary": "Blacklist User",
+        "description": "Blacklist an existing key, and the HWID linked to it (if any).",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "description": "Project ID that contains the key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_key": {
+                    "type": "string",
+                    "description": "User key to blacklist."
+                  },
+                  "ban_reason": {
+                    "type": "string",
+                    "description": "Blacklist reason. Shown to the user when executed."
+                  },
+                  "ban_expire": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Exact Unix timestamp of the ban expiry date. Leave -1 or undefined for an infinite ban."
+                  }
+                },
+                "required": [
+                  "user_key"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/projects/{project_id}/users/unban": {
+      "get": {
+        "tags": [
+          "User Management"
+        ],
+        "summary": "Unban User",
+        "description": "Unban a blacklisted key. Doesn't need API key authentication: only the key's unban_token (32 character random string assigned when blacklisted, changes on every blacklist, unique), found in the user objects returned by Get Users. Any GET request works, including visiting the URL in a browser.",
+        "security": [],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of your project",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "unban_token",
+            "in": "query",
+            "required": true,
+            "description": "Unban token (found in the user objects returned by Get Users)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Invalid unban token"
+          }
+        }
+      }
+    },
+    "/v3/projects/{project_id}/scripts/{script_id}": {
+      "put": {
+        "tags": [
+          "Script Management"
+        ],
+        "summary": "Update Script",
+        "description": "Upload new source code for an existing script, and change its settings",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of your project",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "script_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the script to update",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-turnstile-token",
+            "in": "header",
+            "required": false,
+            "description": "A solved Cloudflare Turnstile token, if the request is challenged",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateScriptRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Script updated, or queued for background processing if track_progress is returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateScriptResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request, usually an invalid API key"
+          },
+          "403": {
+            "description": "IP not whitelisted, or incorrect API key"
+          },
+          "404": {
+            "description": "Script or project not found"
+          },
+          "504": {
+            "description": "Gateway timeout. Large uploads may still be accepted; check script_version before retrying"
+          }
+        }
+      }
+    },
+    "/v3/projects/{project_id}/scripts/{script_id}/progress/{track_id}": {
+      "get": {
+        "tags": [
+          "Script Management"
+        ],
+        "summary": "Get Update Progress",
+        "description": "Check the progress of a script update that is being processed in the background",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of your project",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "script_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the script to update",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "track_id",
+            "in": "path",
+            "required": true,
+            "description": "The track_progress ID returned by Update Script",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current progress",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateProgress"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request, usually an invalid API key"
+          },
+          "403": {
+            "description": "IP not whitelisted, or incorrect API key"
           }
         }
       }
@@ -132,63 +877,458 @@
   },
   "components": {
     "schemas": {
-      "Plant": {
-        "required": [
-          "name"
-        ],
+      "ApiStatus": {
         "type": "object",
         "properties": {
-          "name": {
-            "description": "The name of the plant",
-            "type": "string"
+          "version": {
+            "type": "string",
+            "example": "v3"
           },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
+          "active": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "API is up and working!"
+          },
+          "warning": {
+            "type": "boolean",
+            "example": false
+          },
+          "warning_message": {
+            "type": "string",
+            "example": "No warning"
           }
         }
       },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
+      "KeyDetails": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
           },
-          {
-            "required": [
-              "id"
-            ],
+          "message": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "discord_id": {
+            "type": "string"
+          },
+          "expires_at": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "registered_at": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "plan": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "integer"
+          },
+          "projects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Project"
+            }
+          }
+        }
+      },
+      "KeyStats": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "execution_data": {
             "type": "object",
             "properties": {
-              "id": {
-                "description": "Identification number of the plant",
+              "frequency": {
+                "type": "integer"
+              },
+              "executions": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "stats": {
+            "type": "object",
+            "properties": {
+              "obfuscations": {
+                "type": "integer"
+              },
+              "scripts": {
+                "type": "integer"
+              },
+              "users": {
+                "type": "integer"
+              },
+              "attacks_blocked": {
+                "type": "integer"
+              },
+              "default": {
+                "type": "object",
+                "properties": {
+                  "scripts": {
+                    "type": "integer"
+                  },
+                  "users": {
+                    "type": "integer"
+                  },
+                  "obfuscations": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "reset_at": {
                 "type": "integer",
                 "format": "int64"
               }
             }
           }
-        ]
+        }
       },
-      "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
+      "Project": {
         "type": "object",
         "properties": {
-          "error": {
+          "platform": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "settings": {
+            "type": "object",
+            "properties": {
+              "reset_hwid_cooldown": {
+                "type": "integer",
+                "example": -1
+              }
+            }
+          },
+          "scripts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Script"
+            }
+          }
+        }
+      },
+      "Script": {
+        "type": "object",
+        "properties": {
+          "script_name": {
+            "type": "string"
+          },
+          "script_id": {
+            "type": "string"
+          },
+          "script_version": {
+            "type": "string"
+          },
+          "ffa": {
+            "type": "boolean"
+          },
+          "silent": {
+            "type": "boolean"
+          },
+          "heartbeat": {
+            "type": "boolean"
+          },
+          "lightning": {
+            "type": "boolean"
+          },
+          "verified": {
+            "type": "boolean"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "is_v4_loader": {
+            "type": "boolean"
+          },
+          "last_edited": {
+            "type": "integer"
+          }
+        }
+      },
+      "CreateUserRequest": {
+        "type": "object",
+        "properties": {
+          "identifier": {
+            "type": "string",
+            "description": "Identifier of the user to whitelist. Could be a HWID."
+          },
+          "auth_expire": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "Unix timestamp (seconds) of expiry date. If you don't provide this field, it will never expire. If provided without key_days, include identifier or discord_id so the key counts as claimed and its timer starts immediately; otherwise the offset from now is converted to key_days."
+          },
+          "note": {
+            "type": "string",
+            "description": "Custom note for the client. Makes it easier to identify the user."
+          },
+          "discord_id": {
+            "type": "string",
+            "description": "Discord ID of the user. If not specified, the user won't be able to reset their HWID on their own. They can still link their Discord ID using the Redeem button on the Discord bot (if configured)."
+          },
+          "key_days": {
+            "type": "number",
+            "description": "Number of days the key will have once it has been activated (redeemed or first executed) by the user. On activation, auth_expire is set to current time + key_days * 86400."
+          }
+        }
+      },
+      "CreateUserResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "user_key": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "success": true,
+          "message": "Success!",
+          "user_key": "awIUiHenZzfScOsqkXwGHyRAOsTTcPMR"
+        }
+      },
+      "UsersResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/User"
+            }
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "user_key": {
+            "type": "string"
+          },
+          "identifier": {
+            "type": "string"
+          },
+          "identifier_type": {
+            "type": "string"
+          },
+          "discord_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "reset",
+              "banned"
+            ],
+            "description": "'active': HWID linked to key and active. 'reset': HWID was reset and is waiting to be assigned on first execution. 'banned': no key linked (unknown) and banned. If status is 'active' but banned is 1, the user has a key linked but is still banned."
+          },
+          "last_reset": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "total_resets": {
+            "type": "integer"
+          },
+          "auth_expire": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "banned": {
+            "type": "integer",
+            "description": "1 if banned, 0 otherwise"
+          },
+          "ban_reason": {
+            "type": "string"
+          },
+          "ban_expire": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "unban_token": {
+            "type": "string",
+            "description": "32 character token assigned when the key is blacklisted; used by the unban endpoint"
+          },
+          "total_executions": {
+            "type": "integer"
+          },
+          "note": {
+            "type": "string"
+          },
+          "ban_ip": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "user_key": "zZAaGyLhHiwCJHYewdRFmzBLKYCfJBek",
+          "identifier": "hwid will be here if linked",
+          "identifier_type": "HWID",
+          "discord_id": "",
+          "status": "active",
+          "last_reset": 1672016017,
+          "total_resets": 3,
+          "auth_expire": -1,
+          "banned": 0,
+          "ban_reason": "",
+          "ban_expire": 0,
+          "unban_token": "",
+          "total_executions": 10,
+          "note": "",
+          "ban_ip": ""
+        }
+      },
+      "UpdateUserRequest": {
+        "type": "object",
+        "properties": {
+          "user_key": {
+            "type": "string",
+            "description": "Unique user_key to edit."
+          },
+          "identifier": {
+            "type": "string",
+            "description": "Identifier of the user to whitelist. Could be a HWID."
+          },
+          "discord_id": {
+            "type": "string",
+            "description": "Discord ID of the user."
+          },
+          "auth_expire": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Unix timestamp (seconds) of expiry date. Use -1 if you don't want it to expire."
+          },
+          "note": {
+            "type": "string",
+            "description": "Custom note for the client. Makes it easier to identify the user."
+          }
+        },
+        "required": [
+          "user_key"
+        ]
+      },
+      "UpdateScriptRequest": {
+        "type": "object",
+        "properties": {
+          "script": {
+            "type": "string",
+            "description": "The new source code of the script"
+          },
+          "script_name": {
+            "type": "string",
+            "description": "The script's name"
+          },
+          "ffa": {
+            "type": "boolean",
+            "description": "Free for All mode: anyone can execute the script, without a key"
+          },
+          "silent": {
+            "type": "boolean",
+            "description": "Silent mode: disables Luarmor console outputs. Not recommended"
+          },
+          "heartbeat": {
+            "type": "boolean",
+            "description": "Heartbeat: makes the script more secure. Recommended"
+          },
+          "lightning": {
+            "type": "boolean",
+            "description": "Lightning mode: removes some inline security checks to make the script run faster, slightly decreasing security"
+          },
+          "is_v4_loader": {
+            "type": "boolean",
+            "description": "Use the v4 loader"
+          },
+          "use_reactor": {
+            "type": "boolean",
+            "description": "Process the upload in the background and return a track_progress ID"
+          }
+        },
+        "required": [
+          "script"
+        ]
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
           },
           "message": {
             "type": "string"
           }
         }
+      },
+      "UpdateScriptResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "track_progress": {
+            "type": "string",
+            "description": "Present when the update is processed in the background. Pass it to the progress endpoint."
+          }
+        }
+      },
+      "UpdateProgress": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "description": "processing while running, completed when finished"
+          },
+          "message": {
+            "type": "string"
+          },
+          "reactor_status": {
+            "type": "string",
+            "description": "The current stage, e.g. parsing, obfuscating, completed"
+          },
+          "result": {
+            "$ref": "#/components/schemas/SuccessResponse"
+          }
+        }
       }
     },
     "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
       }
     }
   }

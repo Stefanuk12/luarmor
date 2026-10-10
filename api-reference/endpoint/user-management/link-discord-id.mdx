@@ -1,0 +1,77 @@
+---
+title: Link Discord ID
+description: "Link a Discord ID to a key."
+---
+
+## Endpoint
+
+`POST https://api.luarmor.net/v3/projects/{project_id}/users/linkdiscord`
+
+## Path parameters
+
+| Name         | Type   | Required | Description                      |
+|--------------|--------|----------|----------------------------------|
+| `project_id` | string | Yes      | Project ID that contains the key |
+
+## Headers
+
+| Name            | Type   | Required | Description          |
+|-----------------|--------|----------|----------------------|
+| `Authorization` | string | Yes      | Your Luarmor API key |
+
+## Request body
+
+| Name         | Type    | Required | Description |
+|--------------|---------|----------|-------------|
+| `user_key`   | string  | Yes      | Key to link the Discord ID to |
+| `discord_id` | string  | Yes      | Discord ID (e.g. `1234578635849`) |
+| `force`      | boolean | No       | If `true`, overwrites the Discord ID if the key already has one linked. |
+
+```json
+{
+	"user_key": "Key to link Discord ID to",
+	"discord_id": "1234578635849",
+	"force": false
+}
+```
+
+## Success response
+
+`200`: the Discord ID was linked.
+
+```json
+{
+	"success": true,
+	"message": "Success!"
+}
+```
+
+## Error responses
+
+| Status | Meaning                                  |
+|--------|------------------------------------------|
+| `400`  | Bad request. See the reasons below.      |
+
+There are a few reasons you might get a `400`:
+
+- **There's already a Discord ID linked to this key.** Set `"force": true` to overwrite it.
+- **There's another key linked to the same Discord ID.** Delete the other key first.
+- **The Discord ID is invalid.**
+
+Example error response:
+
+```json
+{
+	"success": false,
+	"message": "This key already has a discord linked to it"
+}
+```
+
+## Example request
+
+```bash
+curl -X POST -H "Authorization: <api_key>" \
+		 -H "Content-Type: application/json" \
+		 -d '{"user_key":"...","discord_id":"..."}' \
+		 https://api.luarmor.net/v3/projects/<project_id>/users/linkdiscord
+```

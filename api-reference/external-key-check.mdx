@@ -1,0 +1,321 @@
+---
+title: 'External Key Check API'
+description: "Check Ad Rewards keys from third-party, non-Lua applications"
+---
+
+This documentation is for third-party, non-Lua applications that want to use the [Luarmor Ad Rewards system](/features/ad-rewards) to generate and validate keys.
+
+<Warning>
+    If you are a script owner writing a Lua script, this page isn't for you. Use the [Key Check Library](/scripting/key-check-library) instead.
+</Warning>
+
+Your project must be approved before you can use any of these endpoints. If you don't have the shared secrets or the app name, contact federal.
+
+## Introduction
+
+This API is straightforward: you can check whether a key is valid, banned, expired, HWID-locked, and so on. The only complicated part is generating the SHA1 signatures for the request and the response. These signatures ensure that important parts of the HTTP traffic haven't been tampered with.
+
+When a user generates or renews a key through an ad link, the key is in the `reset` state. The first validity check then marks the key as `claimed/HWID linked`, and any later check from a different HWID returns a HWID mismatch error.
+
+Every key check made through this API counts as an execution, and shows up on your dashboard and on the key. You can see statistics such as daily executions, total users, and how many times each user has executed.
+
+## HTTP API
+
+<Info>
+    You will make **2 GET requests** in total:
+
+    - The first request fetches the server time and the list of endpoints.
+    - The second request actually checks the key.
+
+    All requests must use the `GET` method and have the `Content-Type: application/json` header.
+
+    Your platform's `User-Agent` must be whitelisted by Luarmor beforehand. Contact federal to get it whitelisted.
+</Info>
+
+### Step 1 - Fetch server info
+
+**Endpoint:** `GET https://sdkapi-public.luarmor.net/sync`
+
+**Response:**
+
+```js
+{
+  st: 1739703913, // UNIX TIMESTAMP OF THE CLOUDFLARE WORKER
+  cf: "AMS", // CF COL (REGION) NAME << not needed for the auth
+  nodes: [ // available nodes that you can randomly pick from.
+    "https://eu1-roblox-auth.luarmor.net/",
+    "https://as1-roblox-auth.luarmor.net/",
+    "https://as2-roblox-auth.luarmor.net/",
+    "https://as3-roblox-auth.luarmor.net/",
+    "https://us1-roblox-auth.luarmor.net/",
+    "https://us2-roblox-auth.luarmor.net/",
+    "https://au1-roblox-auth.luarmor.net/",
+    "https://au2-roblox-auth.luarmor.net/"
+  ]
+}
+```
+
+Parse this JSON and pick a random node URL from the `nodes` array at runtime, so the load is spread evenly across the nodes.
+
+`st` stands for "server time". You will use this value while calculating the request signature, so keep it in a variable for now. It is always a **32-bit integer**.
+
+Your implementation should look like this so far:
+
+<CodeGroup>
+```javascript NodeJS
+const fetch = require('node-fetch');
+const crypto = require('crypto');
+
+const secret_n1 = "asdfdg**********"
+const secret_n2 = "zxczxcv*********"
+const secret_n3 = "hjgh************"
+// You will be given 3 "shared secrets" by the owner, in DMs.
+// you'll use them in the SHA1 signature calc in next step.
+
+const app_name = "minecraftdlc" // you will be given this too, by federal.
+
+let keyToCheck = "BAfjuLxndwTvMBNiCyqMsXMaTcOqXpcr" // user-inputted
+
+// random str gen a-z A-Z and 0-9 only. And fixed 16 char output.
+function randomString() {
+    const length = 16
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+}
+
+function sha1Hash(data) { // SHA1 with LOWERCASE HEX output
+    return crypto.createHash('sha1').update(data).digest('hex');
+}
+
+async function main() {
+    const url1 = 'https://sdkapi-public.luarmor.net/sync';
+    try {
+        const response1 = await fetch(url1);
+        const json1 = await response1.json();
+        console.log(json1)
+
+        const SERVER_TIME = json1.st;
+        const NODES = json1.nodes;
+        
+        let randomNode = NODES[Math.floor(Math.random() * NODES.length)];
+
+        console.log('Random node:', randomNode); 
+        // e.g https://us2-roblox-auth.luarmor.net/
+        
+        // rest of the code will be written in step 2.
+```
+
+```cpp C++
+#include <iostream>
+#include <string>
+#include <random>
+#include <sstream>
+#include <iomanip>
+#include <vector>
+#include <stdexcept>
+#include <curl/curl.h>
+#include <openssl/sha.h>
+#include <nlohmann/json.hpp>
+
+// convenience
+using json = nlohmann::json;
+
+const std::string secret_n1 = "asdfdg**********";
+const std::string secret_n2 = "zxczxcv*********";
+const std::string secret_n3 = "hjgh************";
+const std::string app_name   = "minecraftdlc";  // provided by federal.
+std::string keyToCheck = "BAfjuLxndwTvMBNiCyqMsXMaTcOqXpcr";
+
+// a-z A-Z 0-9 x 16
+std::string randomString() {
+    const int length = 16;
+    const std::string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    std::random_device rd;
+    std::mt19937 generator(rd());
+    std::uniform_int_distribution<> dist(0, chars.size() - 1);
+
+    std::string result;
+    for (int i = 0; i < length; ++i) {
+        result.push_back(chars[dist(generator)]);
+    }
+    return result;
+}
+
+// sha1 lowercase
+std::string sha1Hash(const std::string& data) {
+    unsigned char hash[SHA_DIGEST_LENGTH];
+    SHA1(reinterpret_cast<const unsigned char*>(data.c_str()), data.size(), hash);
+    
+    std::ostringstream oss;
+    for (int i = 0; i < SHA_DIGEST_LENGTH; i++) {
+        oss << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(hash[i]);
+    }
+    return oss.str();
+}
+
+int main() {
+    try {
+        const std::string url1 = "https://sdkapi-public.luarmor.net/sync";
+        std::string response = httpGet(url1); // can use a cURL wrapper here.
+
+        // get JSON response
+        json json1 = json::parse(response);
+        std::cout << "JSON Response:\n" << json1.dump(4) << std::endl;
+
+        if (!json1.contains("st") || !json1.contains("nodes")) {
+            throw std::runtime_error("JSON does not contain required keys.");
+        }
+        auto SERVER_TIME = json1["st"].get<std::string>();
+        auto nodesArray = json1["nodes"].get<std::vector<std::string>>();
+
+        if (nodesArray.empty()) {
+            throw std::runtime_error("No nodes found in JSON response.");
+        }
+        std::random_device rd;
+        std::mt19937 gen(rd()); 
+        std::uniform_int_distribution<> distr(0, nodesArray.size() - 1);
+        std::string randomNode = nodesArray[distr(gen)];
+
+        std::cout << "SERVER_TIME: " << SERVER_TIME << std::endl;
+        std::cout << "Random node: " << randomNode << std::endl;
+        
+        // reset of the code will be given in the next step
+```
+</CodeGroup>
+
+### Step 2 - Check the key
+
+**Endpoint:** `GET https://[node-name].luarmor.net/external_check_key?by=...&key=...`
+
+**Query parameters:**
+
+| Name | Description |
+|------|-------------|
+| `by` | Integration or app name (`app_name` in the example code above). |
+| `key` | The 32-character alphabetic (a-z, A-Z) key that the user entered. |
+
+**Headers:**
+
+| Name | Example value | Description |
+|------|---------------|-------------|
+| `Content-Type` | `application/json` | Required on every request. |
+| `clienttime` | `1739703913` | The server time (`st`) from step 1. |
+| `clientnonce` | `s2mle100lesh420f` | A random 16-character alphanumeric string generated by your code. |
+| `clienthwid` | `03b3b409-f0b97340-40b97304-48327b49827` | HWID value. |
+| `{exec}-fingerprint` | `03b3b409-f0b97340-40b97304-48327b49827` | The same HWID value as `clienthwid`. The header is usually named `{exec}-fingerprint`, where `{exec}` is the name of your platform or executor; the examples below use `executor-fingerprint`. |
+| `externalsignature` | `0391a1e58f324b3a0c79d32dd09436bd45bfc773` | SHA1 signature. See below for how it's calculated. |
+
+<Info>
+    Generate a random 16-character alphanumeric nonce for `clientnonce` and keep it in a variable. You will need it again later to recalculate the response signature.
+</Info>
+
+#### How is `externalsignature` calculated?
+
+```javascript
+// combine them in this order:
+sha1Hash(
+    client_nonce + secret_n1 +
+    keyToCheck + secret_n2 +
+    SERVER_TIME + secret_n3 + 
+    client_hwid
+);
+
+// example input to the hash function would be:
+s2mle100lesh420fasdfdg**********BAfjuLxndwTvMBNiCyqMsXMaTcOqXpcrzxczxcv*********1739703913hjgh************03b3b409-f0b97340-40b97304-48327b49827
+
+SHA1 Output:
+
+28fc97338f74908528fbfdd5fc1cfc7ce313a017 a.k.a "externalsignature"
+```
+
+This means the request parameters can't be spoofed or tampered with unless the attacker can also reproduce the signature, which should be very difficult if you obfuscate or virtualize the authentication part of your binary.
+
+**Response:**
+
+```js
+{
+  code: "KEY_VALID", // see below for all possible "code"s
+  message: "The provided key is valid.", // reflect this to user
+  data: { note: "Ad Reward", total_executions: 9, auth_expire: 1740394140 },
+  signature: "b5c7a24c6c5c0558ee9d0a754a74a236d7270737"
+}
+```
+
+<Warning>
+    You will only get a `signature` field in the response if the code is `KEY_VALID`.
+
+    Other responses don't include a signature, so just show the error message to the user. Spoofing any code other than `KEY_VALID` gains an attacker nothing.
+
+    See the next section for how to verify the response signature.
+</Warning>
+
+#### How is the `KEY_VALID` response `signature` calculated?
+
+```javascript
+// combine values in this order:
+sha1Hash(
+    client_nonce + secret_n3 + // s2mle100lesh420f + hjgh************
+    json2.code // "KEY_VALID"
+);
+
+// example input to the hash function would be:
+s2mle100lesh420fhjgh************KEY_VALID
+
+SHA1 Output:
+
+e9cd0cc2445374f5e0942f822892dca7e68df228 a.k.a response "signature"
+```
+
+Compare this value with the `signature` field to confirm that the `KEY_VALID` response really came from Luarmor, and not from a spoofing tool such as a Fiddler AutoResponder rule.
+
+The rest of your code should look like this:
+
+```javascript
+
+const url2 = randomNode + 'external_check_key?by=' + app_name + '&key=' + keyToCheck;
+let client_nonce = randomString(16);
+
+let client_hwid = "0b4082374928374b2934792374-abcdef"
+let extSignature = sha1Hash(client_nonce + secret_n1 + keyToCheck + secret_n2 + SERVER_TIME + secret_n3 + client_hwid);
+
+console.log("Sending signature:", extSignature); // dont actually print in production
+
+const customHeaders = {
+    'Content-Type': 'application/json',
+    'clienttime': SERVER_TIME,
+    'externalsignature': extSignature,
+    'clientnonce': client_nonce,
+    'clienthwid': client_hwid,
+    'executor-fingerprint': "0b4082374928374b2934792374-abcdef"
+}
+const response2 = await fetch(url2, {
+    method: 'GET',
+    headers: customHeaders
+});
+
+const json2 = await response2.json();
+console.log('Response from GET:', json2);
+// verifying the response authenticity
+let server_nonce = json2.signature;
+let serverSignature = sha1Hash(client_nonce + secret_n3 + json2.code);
+if (json2.code === "KEY_VALID") {
+    if (serverSignature !== server_nonce) {
+        console.log('Server signature verification failed - tampered');
+        return;
+    } else {
+        console.log('Server signature verification OK!!!');
+        console.log("KEY is valid.")
+        
+    }
+} else {
+    console.log("Key verification failed: " + json2.code + ". Message: " + json2.message)
+}
+```
+
+All possible `code` values are listed in the [Key Check Library](/scripting/key-check-library) docs. Usually you only need to check whether the code is `KEY_VALID`.
+
+If you have any questions, contact federal.

@@ -1,0 +1,132 @@
+---
+title: Get Users
+description: "Fetch the users in your project, optionally filtered by Discord ID, key or other fields."
+---
+
+To look up someone's `user_key` by their `discord_id`, their Discord ID must already be linked to the key.
+
+The response contains an array of user objects. If you filter by `discord_id`, `user_key` or `identifier` (e.g. `discord_id=124345`), the array contains a single user, so you can just read `users[0]`.
+
+## Endpoint
+
+`GET https://api.luarmor.net/v3/projects/{project_id}/users`
+
+## Path parameters
+
+| Name         | Type   | Required | Description     |
+|--------------|--------|----------|-----------------|
+| `project_id` | string | Yes      | Your project ID |
+
+## Query parameters
+
+| Name         | Type   | Required | Description |
+|--------------|--------|----------|-------------|
+| `discord_id` | string | No       | Return the user linked to this Discord ID |
+| `user_key`   | string | No       | Return the user with this key |
+| `identifier` | string | No       | Return the user linked to this HWID |
+| `from`       | number | No       | Start index of the results. Use it with `until` to page through users instead of fetching them all at once. |
+| `until`      | number | No       | End index of the results. Use it with `from` to fetch a specific range. |
+| `search`     | string | No       | Return only users whose `identifier`, `user_key`, `discord_id` or `note` contains this value. |
+
+## Headers
+
+| Name            | Type   | Required | Description          |
+|-----------------|--------|----------|----------------------|
+| `Authorization` | string | Yes      | Your Luarmor API key |
+
+## Success response
+
+`200`: returns the matching users.
+
+<Note>
+    Each user has a `status` field. It can be `active`, `reset`, or `banned`.
+
+    - `active`: the user's HWID is linked to the key and the key is **active**.
+    - `reset`: the key has no HWID linked (it is new or its HWID was reset), and is **waiting to be assigned** one on the next execution.
+    - `banned`: the user is banned and has no key linked (they are **unknown**).
+
+    If `status` is `active` but `banned` is `1`, the user **has a key linked** but is banned. The example below shows one user with each status.
+</Note>
+
+```json
+{
+	"success": true,
+	"message": "Success!",
+	"users": [
+		{
+			"user_key": "zZAaGyLhHiwCJHYewdRFmzBLKYCfJBek",
+			"identifier": "hwid will be here if linked",
+			"identifier_type": "HWID",
+			"discord_id": "",
+			"status": "active",
+			"last_reset": 1672016017,
+			"total_resets": 3,
+			"auth_expire": -1,
+			"banned": 0,
+			"ban_reason": "",
+			"ban_expire": 0,
+			"unban_token": "",
+			"total_executions": 10,
+			"note": "",
+			"ban_ip": ""
+		},
+		{
+			"user_key": "ktwCSBSgmWtlTrignkPB3hglhqLyjqKm",
+			"identifier": "",
+			"identifier_type": "HWID",
+			"discord_id": "4157951988959",
+			"status": "reset",
+			"last_reset": 1672038004,
+			"total_resets": 0,
+			"auth_expire": -1,
+			"banned": 0,
+			"ban_reason": "",
+			"ban_expire": 0,
+			"unban_token": "",
+			"total_executions": 0,
+			"note": "",
+			"ban_ip": ""
+		},
+		{
+			"user_key": "",
+			"identifier": "",
+			"identifier_type": "",
+			"discord_id": "",
+			"status": "banned",
+			"last_reset": 0,
+			"total_resets": 0,
+			"auth_expire": 0,
+			"banned": 1,
+			"ban_reason": "Invalid signature",
+			"ban_expire": 1672629163,
+			"unban_token": "QvLJPYzdjBujMlkwembfPrwjIfpsnTkq",
+			"total_executions": 0,
+			"note": "",
+			"ban_ip": "129.20.20.20"
+		}
+	]
+}
+```
+
+## Error responses
+
+| Status | Meaning           |
+|--------|-------------------|
+| `403`  | Invalid API key   |
+| `404`  | Project not found |
+
+Example `404` response:
+
+```json
+{
+	"success": false,
+	"message": "Project not found!"
+}
+```
+
+## Example request
+
+```bash
+curl -H "Authorization: <api_key>" \
+		 "https://api.luarmor.net/v3/projects/<project_id>/users?discord_id=123456"
+```
